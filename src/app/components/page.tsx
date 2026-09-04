@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Header from "@/components/Header";
 import Explorer from "@/components/Explorer";
 import componentsRaw from "@/data/components.json";
@@ -15,7 +16,12 @@ export default function ComponentsPage() {
   return (
     <div className="flex flex-col h-screen">
       <Header />
-      <Explorer data={data} />
+      {/* Explorer reads ?view= with useSearchParams, which opts it out of
+          prerendering. Without this boundary the production build fails on
+          /components, even though dev renders it fine. */}
+      <Suspense fallback={<div className="flex-1 min-h-0" />}>
+        <Explorer data={data} />
+      </Suspense>
     </div>
   );
 }
