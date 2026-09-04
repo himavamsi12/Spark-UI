@@ -1,8 +1,8 @@
 {
-  "name": "origin",
+  "name": "spark-ui-registry",
   "version": "0.1.0",
-  "private": true,
   "bin": {
+    "spark-ui-registry": "cli/index.mjs",
     "spark-ui": "cli/index.mjs"
   },
   "files": [
@@ -34,5 +34,19 @@
     "eslint-config-next": "16.3.4",
     "tailwindcss": "^4",
     "typescript": "^5"
-  }
+  },
+  "description": "Animated React + TypeScript components, copied into your project.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/himavamsi12/Spark-UI.git"
+  },
+  "license": "MIT",
+  "keywords": [
+    "react",
+    "components",
+    "animation",
+    "gsap",
+    "cli",
+    "mcp"
+  ]
 }

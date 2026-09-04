@@ -51,7 +51,7 @@ export default function ComponentActions({
     };
   }, [open]);
 
-  const installCommand = `npx spark-ui@latest add ${entry.slug}`;
+  const installCommand = `npx spark-ui-registry@latest add ${entry.slug}`;
   const blurb = getOriginal(entry.slug)?.blurb ?? "";
 
   function buildPrompt() {

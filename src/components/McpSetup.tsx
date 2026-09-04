@@ -154,8 +154,8 @@ export default function McpSetup({ componentCount }: { componentCount: number })
           The same registry backs the command line, if you would rather add components yourself.
         </p>
         <div className="space-y-2">
-          <CommandRow command="npx spark-ui@latest list" />
-          <CommandRow command="npx spark-ui@latest add cassette-menu" />
+          <CommandRow command="npx spark-ui-registry@latest list" />
+          <CommandRow command="npx spark-ui-registry@latest add cassette-menu" />
         </div>
       </section>
 

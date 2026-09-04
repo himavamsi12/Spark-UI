@@ -128,7 +128,7 @@ export default function DocsIntro({ allComponents }: { allComponents: ComponentE
 
               <p className="text-sm font-semibold text-chalk mt-6 mb-2">1. CLI</p>
               <p>Adds the component to your project, installs its dependencies, and pulls down its assets.</p>
-              <CodeBlock>{`npx spark-ui@latest add cassette-menu`}</CodeBlock>
+              <CodeBlock>{`npx spark-ui-registry@latest add cassette-menu`}</CodeBlock>
 
               <p className="text-sm font-semibold text-chalk mt-6 mb-2">2. Browse and copy</p>
               <p>

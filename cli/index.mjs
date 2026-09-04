@@ -2,8 +2,8 @@
 /**
  * Spark UI CLI: copies animated components into your project, shadcn-style.
  *
- *   npx spark-ui@latest add list-hover-cards
- *   npx spark-ui@latest list
+ *   npx spark-ui-registry@latest add list-hover-cards
+ *   npx spark-ui-registry@latest list
  *
  * The component source is fetched from the registry and written into your repo,
  * so you own the file and can edit it freely. Peer packages the component
@@ -126,8 +126,8 @@ async function main() {
     console.log(`
 ${c.bold("spark-ui")}: animated React components, copied into your project
 
-  ${c.cyan("npx spark-ui@latest add <component…>")}   add one or more components
-  ${c.cyan("npx spark-ui@latest list")}               list everything available
+  ${c.cyan("npx spark-ui-registry@latest add <component…>")}   add one or more components
+  ${c.cyan("npx spark-ui-registry@latest list")}               list everything available
 
 Options
   -d, --dir <path>        where to write components  ${c.dim("(default: components/spark-ui)")}
@@ -143,7 +143,7 @@ Options
     for (const comp of components) {
       console.log(`  ${c.cyan(comp.slug.padEnd(26))} ${c.dim(comp.category.padEnd(12))} ${comp.name}`);
     }
-    console.log(`\n${c.dim("Add one with:")} npx spark-ui@latest add <component>\n`);
+    console.log(`\n${c.dim("Add one with:")} npx spark-ui-registry@latest add <component>\n`);
     return;
   }
 
@@ -153,7 +153,7 @@ Options
   }
 
   if (opts.slugs.length === 0) {
-    console.error(c.red("Specify at least one component, e.g. npx spark-ui@latest add cassette-menu"));
+    console.error(c.red("Specify at least one component, e.g. npx spark-ui-registry@latest add cassette-menu"));
     process.exit(1);
   }
 
