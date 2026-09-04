@@ -3,8 +3,9 @@
 import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, Search, TrendingUp, Sparkles, Flame, Sparkle } from "lucide-react";
+import { BookOpen, Heart, Search, TrendingUp, Sparkles, Flame, Sparkle } from "lucide-react";
 import MediaPreview from "./MediaPreview";
+import { useFavorites } from "@/lib/favorites";
 import { CATEGORY_ORDER, type ComponentEntry, type SortKey } from "@/lib/types";
 
 const EXPLORE_LINKS: { href: string; label: string; icon: React.ElementType }[] = [
@@ -46,6 +47,14 @@ export default function Sidebar({
   const pathname = usePathname();
   const activeSlug = pathname?.startsWith("/components/") ? pathname.split("/")[2] : null;
   const onExploreLink = EXPLORE_LINKS.some((l) => pathname === l.href);
+
+  // Saved from the heart on any component page. Ordered by the stored list so
+  // the most recently saved sits at the bottom, matching the order they were added.
+  const favorites = useFavorites();
+  const favoriteEntries = useMemo(
+    () => favorites.map((slug) => data.find((d) => d.slug === slug)).filter((d): d is ComponentEntry => !!d),
+    [favorites, data],
+  );
 
   const [preview, setPreview] = useState<{ entry: ComponentEntry; top: number; left: number } | null>(null);
   const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -155,6 +164,33 @@ export default function Sidebar({
         <p className="text-sm text-muted px-0.5">No components match “{search}”.</p>
       ) : (
         <nav className="flex flex-col gap-5" onMouseLeave={handleLeave}>
+          {favoriteEntries.length > 0 && (
+            <div>
+              <div className="flex items-center justify-between w-full text-xs font-medium mb-2 px-0.5 text-muted">
+                <span className="uppercase tracking-wide flex items-center gap-1.5">
+                  <Heart size={11} className="text-accent fill-accent" />
+                  Favorites
+                </span>
+                <span className="text-[10px] tabular-nums">{favoriteEntries.length}</span>
+              </div>
+              <div className="flex flex-col">
+                {favoriteEntries.map((entry) => (
+                  <Link
+                    key={`fav-${entry.slug}`}
+                    href={`/components/${entry.slug}`}
+                    onMouseEnter={(e) => handleEnter(entry, e.currentTarget)}
+                    className={`text-sm rounded-medium px-2.5 py-1.5 -mx-0.5 transition-colors truncate ${
+                      entry.slug === activeSlug
+                        ? "bg-slate text-chalk"
+                        : "text-pearl hover:bg-panel hover:text-chalk"
+                    }`}
+                  >
+                    {entry.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
           {groups.map(({ category: cat, entries }) => (
             <div key={cat}>
               <button

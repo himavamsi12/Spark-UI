@@ -10,14 +10,12 @@ import {
   RotateCcw,
   Code2,
   EyeIcon,
-  Heart,
-  Share2,
-  ChevronDown,
 } from "lucide-react";
 import MediaPreview from "./MediaPreview";
 import OriginalControlPanel from "./OriginalControlPanel";
 import ComponentDelivery from "./ComponentDelivery";
 import Sidebar from "./Sidebar";
+import ComponentActions from "./ComponentActions";
 import Footer from "./Footer";
 import { ORIGINALS, getOriginal, getOriginalDefaults } from "@/lib/originalControls";
 import { ORIGINAL_COMPONENTS } from "./originals";
@@ -153,18 +151,7 @@ export default function OriginalDetailView({
               Code
             </button>
           </div>
-          <div className="flex items-center gap-2">
-            <button className="p-2 rounded-pills border border-border text-pearl hover:text-chalk hover:border-pearl/40">
-              <Heart size={15} />
-            </button>
-            <button className="p-2 rounded-pills border border-border text-pearl hover:text-chalk hover:border-pearl/40">
-              <Share2 size={15} />
-            </button>
-            <button className="flex items-center gap-1.5 text-sm border border-border rounded-pills px-3 py-2 text-pearl hover:border-pearl/40">
-              Copy for AI
-              <ChevronDown size={14} />
-            </button>
-          </div>
+          <ComponentActions entry={entry} snippet={snippet} />
         </div>
 
         <div className="relative rounded-cards overflow-hidden border border-border bg-void h-[420px] mb-6">
