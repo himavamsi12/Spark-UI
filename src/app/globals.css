@@ -1,26 +1,307 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Unicorn Studio palette: "aurora behind smoked glass" */
+  --color-void: #08080a;
+  --color-charcoal: #0d0d12;
+  --color-graphite: #17171c;
+  --color-slate: #25252d;
+  --color-iron: #31313a;
+  --color-ash: #62626f;
+  --color-fog: #8b8e9c;
+  --color-pearl: #aeaac0;
+  --color-chalk: #dad7de;
+  --color-lavender-beam: #ff8a3d;
+  --color-iris-glow: #e8730a;
+
+  /* semantic aliases used throughout the app */
+  --bg: var(--color-void);
+  --panel: var(--color-charcoal);
+  --card: var(--color-graphite);
+  --border: rgb(174 170 192 / 0.18);
+  --border-soft: rgb(174 170 192 / 0.1);
+  --text: var(--color-pearl);
+  --muted: var(--color-ash);
+  --accent: var(--color-lavender-beam);
+
+  /* Per-component typefaces, matching the fonts the original sources used.
+     PP Neue Montreal, Google Sans Flex and De Fonte Plus are commercial faces
+     that are not on Google Fonts, so they are named first so they are picked up
+     if a project licenses them, with the closest free match as the fallback. */
+  --font-neue-montreal: "PP Neue Montreal", var(--font-display), var(--font-inter), sans-serif;
+  --font-google-sans-flex: "Google Sans Flex", var(--font-inter), sans-serif;
+  --font-de-fonte-plus: "De Fonte Plus", var(--font-barlow-condensed), sans-serif;
+
+  --radius-cards: 10px;
+  --radius-pills: 3px;
+  --radius-small: 3px;
+  --radius-inputs: 3px;
+  --radius-medium: 3px;
+  --radius-buttons: 3px;
+  --radius-large-panels: 10px;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-panel: var(--panel);
+  --color-card: var(--card);
+  --color-border: var(--border);
+  --color-border-soft: var(--border-soft);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+
+  --color-void: var(--color-void);
+  --color-charcoal: var(--color-charcoal);
+  --color-graphite: var(--color-graphite);
+  --color-slate: var(--color-slate);
+  --color-iron: var(--color-iron);
+  --color-ash: var(--color-ash);
+  --color-fog: var(--color-fog);
+  --color-pearl: var(--color-pearl);
+  --color-chalk: var(--color-chalk);
+  --color-lavender-beam: var(--color-lavender-beam);
+  --color-iris-glow: var(--color-iris-glow);
+
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-display);
+  --font-mono: var(--font-commit-mono);
+
+  --radius-cards: var(--radius-cards);
+  --radius-pills: var(--radius-pills);
+  --radius-small: var(--radius-small);
+  --radius-inputs: var(--radius-inputs);
+  --radius-medium: var(--radius-medium);
+  --radius-buttons: var(--radius-buttons);
+  --radius-large-panels: var(--radius-large-panels);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-graphite);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-fog);
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* The range input is laid over the row fully transparent, and the visible fill,
+   ticks, and thumb are rendered as elements so they align exactly. */
+.scrubber {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: ew-resize;
+  opacity: 0;
+  margin: 0;
+}
+.scrubber::-webkit-slider-runnable-track {
+  height: 100%;
+  background: transparent;
+}
+.scrubber::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 3px;
+  height: 100%;
+}
+.scrubber::-moz-range-track {
+  height: 100%;
+  background: transparent;
+  border: none;
+}
+.scrubber::-moz-range-thumb {
+  width: 3px;
+  height: 100%;
+  border: none;
+}
+
+/* Rounded, bordered color swatch instead of the default chunky native chip. */
+input[type="color"].swatch {
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+input[type="color"].swatch::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+input[type="color"].swatch::-webkit-color-swatch {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+input[type="color"].swatch::-moz-color-swatch {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+@keyframes originDropSpring {
+  0% {
+    opacity: 0;
+    transform: translateY(var(--dh, -40px)) rotate(var(--rot, 0deg)) translateX(var(--drift, 0px))
+      scale(0.7);
+  }
+  55% {
+    opacity: 1;
+    transform: translateY(calc(var(--dh, -40px) * -0.1)) rotate(calc(var(--rot, 0deg) * -0.2))
+      translateX(calc(var(--drift, 0px) * -0.2)) scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg) translateX(0) scale(1);
+  }
+}
+
+@keyframes originDrop {
+  0% {
+    opacity: 0;
+    transform: translateY(var(--dh, -40px));
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(calc(var(--dh, -40px) * -0.08));
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes originGradientSweep {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes originBeamSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes originMarqueeLeft {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes originMarqueeRight {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes originRipple {
+  to {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes originAuroraA {
+  0%,
+  100% {
+    transform: translate(-10%, -10%) scale(1);
+  }
+  50% {
+    transform: translate(10%, 5%) scale(1.15);
+  }
+}
+
+@keyframes originAuroraB {
+  0%,
+  100% {
+    transform: translate(10%, 10%) scale(1.1);
+  }
+  50% {
+    transform: translate(-15%, -5%) scale(0.95);
+  }
+}
+
+@keyframes originThunderFall {
+  0% {
+    transform: translateY(-90px) scaleY(1.35);
+    opacity: 0;
+    filter: drop-shadow(0 0 0px rgba(255, 200, 110, 0));
+  }
+  38% {
+    opacity: 1;
+  }
+  46% {
+    transform: translateY(6px) scaleY(0.88);
+    filter: drop-shadow(0 0 16px rgba(255, 210, 130, 1));
+  }
+  62% {
+    transform: translateY(-4px) scaleY(1.04);
+    filter: drop-shadow(0 0 4px rgba(255, 170, 80, 0.5));
+  }
+  80% {
+    transform: translateY(1px) scaleY(0.99);
+    filter: drop-shadow(0 0 0px rgba(255, 170, 80, 0));
+  }
+  100% {
+    transform: translateY(0) scaleY(1);
+    opacity: 1;
+    filter: drop-shadow(0 0 0px rgba(255, 170, 80, 0));
+  }
+}
+
+@keyframes originThunderFlash {
+  0%,
+  40% {
+    opacity: 0;
+  }
+  46% {
+    opacity: 0.9;
+  }
+  58% {
+    opacity: 0.1;
+  }
+  70%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes originAuroraC {
+  0%,
+  100% {
+    transform: translate(0%, 15%) scale(0.9);
+  }
+  50% {
+    transform: translate(5%, -15%) scale(1.1);
+  }
 }
