@@ -39,7 +39,7 @@ function SignInGate({ title }: { title: string }) {
       <h4 className="text-base font-semibold text-chalk mb-1">{title}</h4>
       <p className="text-sm text-muted mb-4">Sign in to continue.</p>
       <button
-        onClick={() => alert("This clone doesn't implement real authentication. On sparkui.dev this signs you in with Google.")}
+        onClick={() => alert("This clone doesn't implement real authentication. On the live site this signs you in with Google.")}
         className="w-full flex items-center justify-center gap-2 border border-border rounded-pills py-2.5 text-sm text-pearl hover:border-pearl/40 mb-4"
       >
         <svg width="16" height="16" viewBox="0 0 48 48">
