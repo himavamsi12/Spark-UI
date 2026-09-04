@@ -86,7 +86,7 @@ export default function ComponentDelivery({ slug }: { slug: string }) {
             Copies the component into your project, installs what it needs, and pulls down its
             images. Nothing to download by hand.
           </p>
-          <CommandRow command={`npx shadcn@latest add https://sparkui-chi.vercel.app/r/${slug}.json`} />
+          <CommandRow command={`npx spark-ui-registry@latest add ${slug}`} />
           <p className="text-[11px] text-muted pt-0.5">
             Writes to <code className="font-mono text-pearl">components/spark-ui/</code> by default;
             override with <code className="font-mono text-pearl">--dir</code>. The file is yours to

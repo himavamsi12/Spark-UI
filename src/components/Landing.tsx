@@ -199,7 +199,7 @@ export default function Landing({
               <div className="flex items-center gap-2 bg-panel border border-border-soft rounded-medium px-3 py-2.5">
                 <span className="text-muted font-mono text-xs shrink-0">$</span>
                 <code className="text-xs font-mono text-pearl truncate">
-                  npx shadcn@latest add https://sparkui-chi.vercel.app/r/cassette-menu.json
+                  npx spark-ui-registry@latest add cassette-menu
                 </code>
                 <span className="ml-auto w-[7px] h-3.5 bg-accent/70 rounded-[1px] shrink-0" />
               </div>

@@ -51,7 +51,7 @@ export default function ComponentActions({
     };
   }, [open]);
 
-  const installCommand = `npx shadcn@latest add https://sparkui-chi.vercel.app/r/${entry.slug}.json`;
+  const installCommand = `npx spark-ui-registry@latest add ${entry.slug}`;
   const blurb = getOriginal(entry.slug)?.blurb ?? "";
 
   function buildPrompt() {
