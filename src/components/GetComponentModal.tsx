@@ -8,10 +8,10 @@ type Method = "cli" | "code" | "mcp" | "ai";
 type PM = "bun" | "npm" | "yarn" | "pnpm";
 
 const PM_COMMANDS: Record<PM, (slug: string) => string> = {
-  bun: (slug) => `bunx --bun spark-ui-registry@latest add ${slug}`,
-  npm: (slug) => `npx spark-ui-registry@latest add ${slug}`,
-  yarn: (slug) => `yarn dlx spark-ui-registry@latest add ${slug}`,
-  pnpm: (slug) => `pnpm dlx spark-ui-registry@latest add ${slug}`,
+  bun: (slug) => `bunx --bun shadcn@latest add https://sparkui-chi.vercel.app/r/${slug}.json`,
+  npm: (slug) => `npx shadcn@latest add https://sparkui-chi.vercel.app/r/${slug}.json`,
+  yarn: (slug) => `yarn dlx shadcn@latest add https://sparkui-chi.vercel.app/r/${slug}.json`,
+  pnpm: (slug) => `pnpm dlx shadcn@latest add https://sparkui-chi.vercel.app/r/${slug}.json`,
 };
 
 function CopyButton({ text, label = "Copy" }: { text: string; label?: string }) {

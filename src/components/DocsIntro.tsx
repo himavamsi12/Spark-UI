@@ -126,9 +126,22 @@ export default function DocsIntro({ allComponents }: { allComponents: ComponentE
             <Section id="quick-start" title="Quick start">
               <p>Three ways in, depending on how hands-on you want to be.</p>
 
-              <p className="text-sm font-semibold text-chalk mt-6 mb-2">1. CLI</p>
-              <p>Adds the component to your project, installs its dependencies, and pulls down its assets.</p>
-              <CodeBlock>{`npx spark-ui-registry@latest add cassette-menu`}</CodeBlock>
+              <p className="text-sm font-semibold text-chalk mt-6 mb-2">1. shadcn CLI</p>
+              <p>
+                Spark UI is a shadcn-compatible registry, so the CLI you already have installs from it.
+                This writes the component into your project and installs what it imports.
+              </p>
+              <CodeBlock>{`npx shadcn@latest add https://sparkui-chi.vercel.app/r/cassette-menu.json`}</CodeBlock>
+
+              <p className="mt-4">
+                Adding it often? Register the namespace once in your{" "}
+                <code className="text-accent font-mono text-sm">components.json</code>:
+              </p>
+              <CodeBlock>{`"registries": {
+  "@spark-ui": "https://sparkui-chi.vercel.app/r/{name}.json"
+}`}</CodeBlock>
+              <p className="mt-4">Then add anything by name:</p>
+              <CodeBlock>{`npx shadcn@latest add @spark-ui/cassette-menu`}</CodeBlock>
 
               <p className="text-sm font-semibold text-chalk mt-6 mb-2">2. Browse and copy</p>
               <p>
