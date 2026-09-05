@@ -116,10 +116,27 @@ export default function WaabiScrollReveal({
       });
     }
 
-    // Sideways offset is fixed; only y is driven by scroll.
-    columns.forEach((col, i) => {
-      gsap.set(col, { x: COLUMN_OFFSET_X[i % COLUMN_OFFSET_X.length] });
-    });
+    // Below 1000px the reference shrinks and fades the gallery, drops the
+    // middle columns' sideways offset so four columns still fit, and lifts the
+    // hero above the gallery instead of behind it.
+    const tiles = [...track.querySelectorAll<HTMLDivElement>("[data-tile]")];
+
+    function applyResponsive() {
+      const narrow = root!.clientWidth < 1000;
+      const size = narrow ? 75 : 125;
+      for (const tile of tiles) {
+        tile.style.width = `${size}px`;
+        tile.style.height = `${size}px`;
+        tile.style.opacity = narrow ? "0.25" : "1";
+        tile.style.filter = narrow ? "saturate(0)" : "none";
+      }
+      columns.forEach((col, i) => {
+        const middle = i % 4 === 1 || i % 4 === 2;
+        gsap.set(col, { x: narrow && middle ? 0 : COLUMN_OFFSET_X[i % COLUMN_OFFSET_X.length] });
+      });
+      heroPin!.style.zIndex = narrow ? "2" : "0";
+    }
+    applyResponsive();
 
     function applyColumns(scroll: number) {
       const viewport = root!.clientHeight;
@@ -193,6 +210,7 @@ export default function WaabiScrollReveal({
 
     const ro = new ResizeObserver(() => {
       publishFrameHeight();
+      applyResponsive();
       frame(scroll);
     });
     ro.observe(root);
@@ -220,6 +238,12 @@ export default function WaabiScrollReveal({
         containerType: "inline-size",
       }}
     >
+      <style>{`
+        @container (max-width: 1000px) {
+          .wsr-fluid { width: 100%; }
+        }
+      `}</style>
+
       {/* The hero is pinned, so it lives outside the scrolling track, and sits
           under it: the reference pins with pinSpacing false, leaving `.about` a
           later positioned sibling that rides up over the shrinking image. */}
@@ -238,7 +262,7 @@ export default function WaabiScrollReveal({
           style={{ padding: "clamp(1.5rem, 4cqw, 4rem)", color: heroTextColor }}
         >
           <h1
-            className="w-[75%] font-normal leading-none tracking-[-0.03em]"
+            className="wsr-fluid w-[75%] font-normal leading-none tracking-[-0.03em]"
             style={{ fontSize: `clamp(calc(1.6rem * ${scale}), calc(5cqw * ${scale}), calc(5rem * ${scale}))` }}
           >
             {headline}
@@ -251,7 +275,7 @@ export default function WaabiScrollReveal({
         >
           <h3
             ref={heroCopyRef}
-            className="w-[50%] font-normal leading-none tracking-[-0.03em]"
+            className="wsr-fluid w-[50%] font-normal leading-none tracking-[-0.03em]"
             style={{ fontSize: `clamp(calc(1.1rem * ${scale}), calc(3cqw * ${scale}), calc(3rem * ${scale}))` }}
           >
             {words.map((word, i) => (
@@ -282,7 +306,9 @@ export default function WaabiScrollReveal({
                 {gallery.slice(col * perColumn, col * perColumn + perColumn).map((src, i) => (
                   <div
                     key={`${src}-${i}`}
-                    className="w-[125px] h-[125px] rounded-[10px] overflow-hidden shrink-0"
+                    data-tile
+                    className="rounded-[10px] overflow-hidden shrink-0"
+                    style={{ width: 125, height: 125 }}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={src} alt="" draggable={false} className="w-full h-full object-cover" />
@@ -292,7 +318,7 @@ export default function WaabiScrollReveal({
             ))}
           </div>
 
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40%]">
+          <div className="wsr-fluid absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40%]">
             <h3
               className="font-normal leading-none tracking-[-0.03em]"
               style={{ fontSize: `clamp(calc(1rem * ${scale}), calc(2.5cqw * ${scale}), calc(3rem * ${scale}))` }}
@@ -307,7 +333,7 @@ export default function WaabiScrollReveal({
           style={{ height: "var(--frame-h, 100%)", background: outroBackground }}
         >
           <h3
-            className="w-[35%] font-normal leading-none tracking-[-0.03em]"
+            className="wsr-fluid w-[35%] font-normal leading-none tracking-[-0.03em]"
             style={{ fontSize: `clamp(calc(1rem * ${scale}), calc(2.5cqw * ${scale}), calc(3rem * ${scale}))` }}
           >
             {outro}
