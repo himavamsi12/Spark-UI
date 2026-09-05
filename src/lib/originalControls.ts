@@ -508,6 +508,53 @@ export const ORIGINALS: OriginalEntry[] = [
       { key: "autoPlay", label: "Auto Play", type: "toggle", default: false, description: "Off matches the reference, which only moves with the scroll." },
     ],
   },
+  {
+    key: "mosaic-flip-hover",
+    name: "Mosaic Flip Hover",
+    category: "Gallery",
+    blurb: "A wall of tiles drifts in depth on its own, then flips in a wave out from the centre to turn over into the next project's image as you move down the list.",
+    features: [
+      "Every tile is a 3D box whose faces each carry their own slice of the picture, so the wall reads as one image rather than a grid of thumbnails",
+      "The incoming image is painted onto whichever face is currently turned away, so the swap itself is never visible",
+      "Tiles drift to random depths on independent loops, staggered on start so the wall never pulses in unison",
+    ],
+    controls: [
+      { key: "images", label: "Project Images", type: "imageList", default: ["/mosaic-flip/img1.jpg", "/mosaic-flip/img2.jpg", "/mosaic-flip/img3.jpg", "/mosaic-flip/img4.jpg", "/mosaic-flip/img5.jpg", "/mosaic-flip/img6.jpg"], description: "One image per project in the list." },
+      { key: "labels", label: "Project Names", type: "textList", default: ["NX-09", "1997 Hallway Tape", "Deep Space", "Sleep Phase Anomaly", "Still-life.mov", "Monoform\u2122"], description: "Hover targets listed in the corner." },
+      { key: "idleImage", label: "Idle Image", type: "image", default: "/mosaic-flip/default.jpg", description: "Shown when nothing is hovered." },
+      { key: "background", label: "Background", type: "color", default: "#171717", description: "Colour behind the tile wall." },
+      { key: "tileEdge", label: "Tile Edge", type: "color", default: "#222222", description: "Colour of the top and bottom faces of each tile." },
+      { key: "tilesX", label: "Columns", type: "slider", default: 12, min: 4, max: 20, step: 1, description: "Tiles across the wall." },
+      { key: "tilesY", label: "Rows", type: "slider", default: 9, min: 3, max: 16, step: 1, description: "Tiles down the wall." },
+      { key: "tileSize", label: "Tile Size", type: "slider", default: 60, min: 30, max: 100, step: 5, description: "Size of each tile in pixels." },
+      { key: "breatheDepth", label: "Drift Depth", type: "slider", default: 40, min: 0, max: 120, step: 10, description: "How far tiles drift toward and away from you." },
+      { key: "fontFamily", label: "Font", type: "font", default: "var(--font-dm-mono), monospace", description: "Typeface for the project list." },
+      { key: "textScale", label: "Text Scale", type: "fontScale", default: 100, min: 50, max: 200, step: 10, description: "Relative size of the project list." },
+      { key: "speed", label: "Speed", type: "slider", default: 100, min: 50, max: 200, step: 10, description: "Speed of the flip and the idle drift." },
+    ],
+  },
+  {
+    key: "lens-zoom-scroll",
+    name: "Lens Zoom Scroll",
+    category: "Animations",
+    blurb: "Scrolling sweeps light across the lenses of a drawn illustration, fades a photograph in behind the glass, then dives the whole scene 22x into one lens as the headline assembles word by word.",
+    features: [
+      "Each lens in the artwork is turned into a clipping mask at runtime, so the photograph appears only through the glass",
+      "Glare bands finish their sweep at 75% of the scroll, handing off to the zoom rather than competing with it",
+      "The zoom runs from a fixed focus point on the artwork, so the dive lands inside a single lens no matter the screen size",
+    ],
+    controls: [
+      { key: "headline", label: "Headline", type: "text", default: "Insert Something Wildly Impressive Right Here", description: "Words that assemble during the zoom." },
+      { key: "lensImage", label: "Lens Image", type: "image", default: "/lens-zoom/img.jpg", description: "Photograph revealed inside the lenses." },
+      { key: "background", label: "Background", type: "color", default: "#eb5e55", description: "Colour behind the illustration." },
+      { key: "glaresPerLens", label: "Glares Per Lens", type: "slider", default: 2, min: 1, max: 5, step: 1, description: "How many light bands sweep each lens." },
+      { key: "finalZoomScale", label: "Zoom Scale", type: "slider", default: 22, min: 5, max: 40, step: 1, description: "How far the scene dives into the lens." },
+      { key: "fontFamily", label: "Font", type: "font", default: "var(--font-barlow-condensed), sans-serif", description: "Typeface used for the headline." },
+      { key: "textScale", label: "Text Scale", type: "fontScale", default: 100, min: 50, max: 200, step: 10, description: "Relative size of the headline." },
+      { key: "speed", label: "Speed", type: "slider", default: 100, min: 50, max: 200, step: 10, description: "Scroll sensitivity of the zoom." },
+      { key: "autoPlay", label: "Auto Play", type: "toggle", default: false, description: "Off matches the reference, which only moves with the scroll." },
+    ],
+  },
 ];
 
 export function getOriginal(key: string): OriginalEntry | undefined {

@@ -23,6 +23,8 @@ import SlitRevealScroll from "./SlitRevealScroll";
 import StrokeDrawReveal from "./StrokeDrawReveal";
 import GridShutterTransition from "./GridShutterTransition";
 import DissolveImageReveal from "./DissolveImageReveal";
+import MosaicFlipHover from "./MosaicFlipHover";
+import LensZoomScroll from "./LensZoomScroll";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ORIGINAL_COMPONENTS: Record<string, React.ComponentType<any>> = {
@@ -51,4 +53,6 @@ export const ORIGINAL_COMPONENTS: Record<string, React.ComponentType<any>> = {
   "stroke-draw-reveal": StrokeDrawReveal,
   "grid-shutter-transition": GridShutterTransition,
   "dissolve-image-reveal": DissolveImageReveal,
+  "mosaic-flip-hover": MosaicFlipHover,
+  "lens-zoom-scroll": LensZoomScroll,
 };

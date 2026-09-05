@@ -27,6 +27,8 @@ export const ORIGINAL_SOURCE_FILES: Record<string, string> = {
   "stroke-draw-reveal": "StrokeDrawReveal",
   "grid-shutter-transition": "GridShutterTransition",
   "dissolve-image-reveal": "DissolveImageReveal",
+  "mosaic-flip-hover": "MosaicFlipHover",
+  "lens-zoom-scroll": "LensZoomScroll",
 };
 
 export function sourceFileFor(slug: string): string | undefined {
