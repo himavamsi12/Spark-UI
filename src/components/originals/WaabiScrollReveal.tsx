@@ -5,10 +5,17 @@ import gsap from "gsap";
 
 const DEFAULT_GALLERY = Array.from({ length: 16 }, (_, i) => `/waabi-scroll/img${i + 1}.jpg`);
 
-// Column drift and starting offsets, straight from the reference's CSS + tweens.
-const COLUMN_TRAVEL = [-500, -250, -250, -500];
+// Columns start low and offset sideways in the reference's CSS, then each is
+// tweened up to its own end point; the drift is that whole span, not 0 -> end.
+const COLUMN_START_Y = [1000, 500, 500, 1000];
+const COLUMN_END_Y = [-500, -250, -250, -500];
 const COLUMN_OFFSET_X = [0, -225, 225, 0];
-const COLUMN_OFFSET_Y = [1000, 500, 500, 1000];
+
+// The reference's flow, in frames: the hero occupies one and is pinned for 3.5
+// while `.about` sits 2.75 further down, so the gallery starts climbing over
+// the hero before the shrink has finished.
+const HERO_PIN = 3.5;
+const ABOUT_OFFSET = 3.75;
 
 export default function WaabiScrollReveal({
   heroImage = "/waabi-scroll/hero.jpg",
@@ -70,9 +77,6 @@ export default function WaabiScrollReveal({
 
     let isHeroCopyHidden = false;
 
-    // The hero pins for 3.5 viewports; every phase below is a slice of that.
-    const HERO_TRAVEL = 3.5;
-
     function applyHero(progress: number) {
       const w = root!.clientWidth;
       const h = root!.clientHeight;
@@ -106,6 +110,11 @@ export default function WaabiScrollReveal({
       });
     }
 
+    // Sideways offset is fixed; only y is driven by scroll.
+    columns.forEach((col, i) => {
+      gsap.set(col, { x: COLUMN_OFFSET_X[i % COLUMN_OFFSET_X.length] });
+    });
+
     function applyColumns(scroll: number) {
       const viewport = root!.clientHeight;
       const about = track!.querySelector<HTMLDivElement>("[data-about]");
@@ -114,7 +123,9 @@ export default function WaabiScrollReveal({
       const top = about.offsetTop - scroll;
       const progress = gsap.utils.clamp(0, 1, (viewport - top) / (viewport + about.offsetHeight));
       columns.forEach((col, i) => {
-        gsap.set(col, { y: progress * COLUMN_TRAVEL[i % COLUMN_TRAVEL.length] });
+        const from = COLUMN_START_Y[i % COLUMN_START_Y.length];
+        const to = COLUMN_END_Y[i % COLUMN_END_Y.length];
+        gsap.set(col, { y: gsap.utils.interpolate(from, to, progress) });
       });
     }
 
@@ -123,10 +134,13 @@ export default function WaabiScrollReveal({
     let target = 0;
     let userDriven = false;
 
-    const maxScroll = () => Math.max(1, track!.scrollHeight - root!.clientHeight);
+    // Derived from the flow rather than scrollHeight: the columns are taller
+    // than their section and overflow it, which would otherwise stretch the
+    // scroll well past the outro.
+    const maxScroll = () => Math.max(1, root!.clientHeight * (ABOUT_OFFSET + 1));
 
     function frame(value: number) {
-      const pinLength = root!.clientHeight * HERO_TRAVEL;
+      const pinLength = root!.clientHeight * HERO_PIN;
       // Hero stays put for its pin, then the whole track scrolls past it.
       const heroProgress = gsap.utils.clamp(0, 1, value / pinLength);
       applyHero(heroProgress);
@@ -196,8 +210,10 @@ export default function WaabiScrollReveal({
         containerType: "inline-size",
       }}
     >
-      {/* The hero is pinned, so it lives outside the scrolling track. */}
-      <div className="absolute inset-0 z-[1] pointer-events-none">
+      {/* The hero is pinned, so it lives outside the scrolling track, and sits
+          under it: the reference pins with pinSpacing false, leaving `.about` a
+          later positioned sibling that rides up over the shrinking image. */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
         <div
           ref={heroImgRef}
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 overflow-hidden will-change-[width,height]"
@@ -238,9 +254,9 @@ export default function WaabiScrollReveal({
         </div>
       </div>
 
-      <div ref={trackRef} className="absolute top-0 left-0 w-full will-change-transform">
+      <div ref={trackRef} className="absolute top-0 left-0 w-full z-[1] will-change-transform">
         {/* Spacer standing in for the pinned hero's scroll length. */}
-        <div className="w-full" style={{ height: "calc(var(--frame-h, 100%) * 4.5)" }} />
+        <div className="w-full" style={{ height: `calc(var(--frame-h, 100%) * ${ABOUT_OFFSET})` }} />
 
         <div data-about className="relative w-full flex items-center justify-center text-center" style={{ height: "var(--frame-h, 100%)" }}>
           <div
@@ -252,9 +268,6 @@ export default function WaabiScrollReveal({
                 key={col}
                 data-col
                 className="relative h-[125%] flex flex-col justify-around will-change-transform"
-                style={{
-                  transform: `translateX(${COLUMN_OFFSET_X[col]}px) translateY(${COLUMN_OFFSET_Y[col]}px)`,
-                }}
               >
                 {gallery.slice(col * perColumn, col * perColumn + perColumn).map((src, i) => (
                   <div
