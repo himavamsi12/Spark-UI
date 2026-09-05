@@ -221,35 +221,7 @@ export default function AccessGateReveal({
 
   return (
     <div className="relative w-full h-full overflow-hidden" style={{ fontFamily, containerType: "inline-size" }}>
-      {/* Page, scaled down until the gate clears */}
-      <div
-        ref={heroRef}
-        className="absolute inset-0 flex items-center justify-center text-center p-6"
-        style={{ background, color: foreground, willChange: "transform" }}
-      >
-        {/* Sits inside the page and sweeps away last */}
-        <div ref={revealerRef} className="absolute inset-0 z-[1]" style={{ background: foreground }} />
-        <h1
-          className="relative z-[2] uppercase font-extrabold leading-[0.8] tracking-[-0.02em] flex flex-wrap justify-center gap-x-[0.2em]"
-          style={{ width: "90%", fontSize: `clamp(calc(1.75rem * ${scale}),calc(15cqw * ${scale}),calc(15rem * ${scale}))` }}
-        >
-          {headline.split(" ").map((word, i) => (
-            <span key={`${word}-${i}`} className="inline-block overflow-hidden">
-              <span
-                ref={(el) => {
-                  wordRefs.current[i] = el;
-                }}
-                className="inline-block will-change-transform"
-                style={{ transform: "translateY(100%)" }}
-              >
-                {word}
-              </span>
-            </span>
-          ))}
-        </h1>
-      </div>
-
-      {/* Backdrop revealed between the two sweeps */}
+      {/* Readout layer behind everything, seen around the scaled-down page */}
       <div
         className="absolute inset-0 flex flex-col justify-between z-0"
         style={{ background: foreground, color: backdropText }}
@@ -282,6 +254,35 @@ export default function AccessGateReveal({
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Page, scaled down until the gate clears. Sits above the backdrop,
+          so sweeping its revealer is what finally shows the headline. */}
+      <div
+        ref={heroRef}
+        className="absolute inset-0 z-[1] flex items-center justify-center text-center p-6"
+        style={{ background, color: foreground, willChange: "transform" }}
+      >
+        {/* Sits inside the page and sweeps away last */}
+        <div ref={revealerRef} className="absolute inset-0 z-[1]" style={{ background: foreground }} />
+        <h1
+          className="relative z-[2] uppercase font-extrabold leading-[0.8] tracking-[-0.02em] flex flex-wrap justify-center gap-x-[0.2em]"
+          style={{ width: "90%", fontSize: `clamp(calc(1.75rem * ${scale}),calc(15cqw * ${scale}),calc(15rem * ${scale}))` }}
+        >
+          {headline.split(" ").map((word, i) => (
+            <span key={`${word}-${i}`} className="inline-block overflow-hidden">
+              <span
+                ref={(el) => {
+                  wordRefs.current[i] = el;
+                }}
+                className="inline-block will-change-transform"
+                style={{ transform: "translateY(100%)" }}
+              >
+                {word}
+              </span>
+            </span>
+          ))}
+        </h1>
       </div>
 
       {/* The gate itself */}
