@@ -623,6 +623,50 @@ export const ORIGINALS: OriginalEntry[] = [
       { key: "speed", label: "Speed", type: "slider", default: 100, min: 50, max: 200, step: 10, description: "Playback speed of the reveal." },
     ],
   },
+  {
+    key: "scroll-tunnel",
+    name: "3D Scroll Tunnel",
+    category: "Gallery",
+    blurb: "Images ringed around an endless corridor rush past the camera as you scroll, fading up out of the dark and blacking out again as they pass.",
+    features: [
+      "Layers wrap through the tunnel's depth on a modulo, so the corridor recycles forever with a fixed number of elements",
+      "Each layer's darkness is a curve of its depth, squared on approach, so images emerge from black rather than popping in",
+      "Layers past the camera are hidden outright rather than merely transparent, keeping the paint cost flat however long you scroll",
+    ],
+    controls: [
+      { key: "images", label: "Images", type: "imageList", default: ["/scroll-tunnel/img1.jpg", "/scroll-tunnel/img2.jpg", "/scroll-tunnel/img3.jpg", "/scroll-tunnel/img4.jpg", "/scroll-tunnel/img5.jpg", "/scroll-tunnel/img6.jpg", "/scroll-tunnel/img7.jpg", "/scroll-tunnel/img8.jpg", "/scroll-tunnel/img9.jpg", "/scroll-tunnel/img10.jpg", "/scroll-tunnel/img11.jpg", "/scroll-tunnel/img12.jpg"], description: "Images ringed around the tunnel, four to a layer." },
+      { key: "background", label: "Background", type: "color", default: "#000000", description: "Colour of the void and the fade-out." },
+      { key: "layerGap", label: "Layer Gap", type: "slider", default: 2500, min: 800, max: 5000, step: 100, description: "Depth between rings of images." },
+      { key: "scrollSpeed", label: "Scroll Speed", type: "slider", default: 200, min: 50, max: 500, step: 10, description: "How fast scrolling travels the tunnel." },
+      { key: "smoothing", label: "Smoothing", type: "slider", default: 7, min: 1, max: 30, step: 1, description: "How much the motion lags behind the scroll." },
+      { key: "itemWidth", label: "Image Width", type: "slider", default: 180, min: 80, max: 320, step: 10, description: "Width of each image in pixels." },
+      { key: "itemHeight", label: "Image Height", type: "slider", default: 220, min: 100, max: 400, step: 10, description: "Height of each image in pixels." },
+      { key: "radiusX", label: "Ring Width", type: "slider", default: 400, min: 150, max: 700, step: 10, description: "How far images sit from the centre horizontally." },
+      { key: "radiusY", label: "Ring Height", type: "slider", default: 280, min: 100, max: 600, step: 10, description: "How far images sit from the centre vertically." },
+      { key: "autoPlay", label: "Auto Play", type: "toggle", default: true, description: "Drift down the tunnel without scrolling." },
+    ],
+  },
+  {
+    key: "creative-clutter",
+    name: "Creative Clutter",
+    category: "Animations",
+    blurb: "A desk of scattered objects that rearranges itself between a messy pile, a tidy grid, and a notebook spread, every piece flying to its new place at once.",
+    features: [
+      "Each mode is a full set of positions rather than a set of moves, so any arrangement can animate into any other",
+      "GSAP's Flip records where every object is, the layout snaps to the new mode, and the difference is animated back",
+      "Positions are percentages of the desk, so the arrangements hold their composition at any size",
+    ],
+    controls: [
+      { key: "title", label: "Title", type: "text", default: "Creative Clutter", description: "Heading on the desk." },
+      { key: "body", label: "Body", type: "text", default: "The best ideas live somewhere between a coffee stain and a half-open folder, scattered things have a way of finding others when you stop trying to organize.", description: "Supporting copy under the heading." },
+      { key: "background", label: "Background", type: "color", default: "#e8e6df", description: "Colour of the desk." },
+      { key: "textColor", label: "Text Color", type: "color", default: "#141414", description: "Colour of the copy and the mode buttons." },
+      { key: "itemScale", label: "Object Size", type: "slider", default: 100, min: 40, max: 150, step: 5, description: "Relative size of every object on the desk." },
+      { key: "fontFamily", label: "Font", type: "font", default: "var(--font-dm-sans), sans-serif", description: "Typeface for the copy." },
+      { key: "textScale", label: "Text Scale", type: "fontScale", default: 100, min: 50, max: 200, step: 10, description: "Relative size of the copy." },
+      { key: "speed", label: "Speed", type: "slider", default: 100, min: 50, max: 200, step: 10, description: "Speed of the rearrangement." },
+    ],
+  },
 ];
 
 export function getOriginal(key: string): OriginalEntry | undefined {

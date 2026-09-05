@@ -32,6 +32,8 @@ export const ORIGINAL_SOURCE_FILES: Record<string, string> = {
   "accordion-frames": "AccordionFrames",
   "magnetic-cards": "MagneticCards",
   "steelworks-reveal": "SteelworksReveal",
+  "scroll-tunnel": "ScrollTunnel",
+  "creative-clutter": "CreativeClutter",
 };
 
 export function sourceFileFor(slug: string): string | undefined {

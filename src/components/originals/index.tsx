@@ -28,6 +28,8 @@ import LensZoomScroll from "./LensZoomScroll";
 import AccordionFrames from "./AccordionFrames";
 import MagneticCards from "./MagneticCards";
 import SteelworksReveal from "./SteelworksReveal";
+import ScrollTunnel from "./ScrollTunnel";
+import CreativeClutter from "./CreativeClutter";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ORIGINAL_COMPONENTS: Record<string, React.ComponentType<any>> = {
@@ -61,4 +63,6 @@ export const ORIGINAL_COMPONENTS: Record<string, React.ComponentType<any>> = {
   "accordion-frames": AccordionFrames,
   "magnetic-cards": MagneticCards,
   "steelworks-reveal": SteelworksReveal,
+  "scroll-tunnel": ScrollTunnel,
+  "creative-clutter": CreativeClutter,
 };
