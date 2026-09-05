@@ -124,7 +124,7 @@ export default function DetailView({
           </span>
         </div>
 
-        <div className="relative rounded-cards overflow-hidden border border-border bg-void w-full h-[560px]">
+        <div className="relative rounded-cards overflow-hidden border border-border bg-void w-full aspect-video min-h-[360px] max-h-[760px]">
           {isOriginal ? (
             OriginalComp && <OriginalComp key={replayKey} {...params} />
           ) : customizing || !hasRealMedia ? (

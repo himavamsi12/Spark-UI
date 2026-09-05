@@ -154,7 +154,7 @@ export default function OriginalDetailView({
           <ComponentActions entry={entry} snippet={snippet} />
         </div>
 
-        <div className="relative rounded-cards overflow-hidden border border-border bg-void h-[420px] mb-6">
+        <div className="relative rounded-cards overflow-hidden border border-border bg-void aspect-video min-h-[360px] max-h-[760px] mb-6">
           {tab === "preview" ? (
             Comp && <Comp key={replayKey} {...params} />
           ) : (
