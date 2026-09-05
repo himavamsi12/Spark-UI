@@ -24,6 +24,10 @@ const CARD_DISMISS_DURATION = 100;
 const FLIP_TILT = [-10, -20, -5, 10];
 const DISMISS_TILT = [-50, -60, -45, 50];
 
+// Lenis' default lerp, which is the smoothing the reference actually scrolls
+// with; its ScrollTrigger is scrub: true, so it adds no catch-up of its own.
+const smoothing = (dt: number) => 1 - Math.pow(0.9, dt * 60);
+
 /** Reference picks card text by hand; luminance reproduces every one of its pairs. */
 function readableOn(hex: string) {
   const h = hex.replace("#", "");
@@ -38,11 +42,13 @@ export default function StickyFlipCards({
   frontTitle = "First Frame",
   frontBadge = "Start here",
   frontBody = "A single moment, held in place before everything begins to move.",
+  aboutText = "A quiet progression of motion and stillness, where each layer reveals itself with intention and nothing feels out of place.",
   cardTitles = DEFAULT_TITLES,
   cardBodies = DEFAULT_BODIES,
   cardColors = DEFAULT_CARD_COLORS,
   frontColor = "#fd4400",
   background = "#fbfff2",
+  aboutBackground = "#e7ebdf",
   textColor = "#0f0f0f",
   fontFamily = "var(--font-barlow-condensed), sans-serif",
   bodyFont = "var(--font-dm-sans), sans-serif",
@@ -54,11 +60,13 @@ export default function StickyFlipCards({
   frontTitle?: string;
   frontBadge?: string;
   frontBody?: string;
+  aboutText?: string;
   cardTitles?: string[];
   cardBodies?: string[];
   cardColors?: string[];
   frontColor?: string;
   background?: string;
+  aboutBackground?: string;
   textColor?: string;
   fontFamily?: string;
   bodyFont?: string;
@@ -68,6 +76,8 @@ export default function StickyFlipCards({
 }) {
   const scale = textScale / 100;
   const rootRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
   const headlineRef = useRef<HTMLDivElement>(null);
   const frontRef = useRef<HTMLDivElement>(null);
   const backRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -76,10 +86,12 @@ export default function StickyFlipCards({
 
   useEffect(() => {
     const root = rootRef.current;
+    const track = trackRef.current;
+    const hero = heroRef.current;
     const front = frontRef.current;
     const heroHeadline = headlineRef.current;
     const backCards = backRefs.current.filter(Boolean) as HTMLDivElement[];
-    if (!root || !front || !heroHeadline || !backCards.length) return;
+    if (!root || !track || !hero || !front || !heroHeadline || !backCards.length) return;
 
     const cards = [front, ...backCards];
     const total = CARD_DISMISS_START + backCards.length * CARD_DISMISS_DURATION;
@@ -159,18 +171,32 @@ export default function StickyFlipCards({
       });
     }
 
-    apply(0);
+    // The reference's document, in frames: the hero, the 7-frame spacer that
+    // pinSpacing inserts for the pin, then the about section. The hero is
+    // fixed for the length of the pin and only then scrolls away.
+    const pinFrames = total / 100;
+    const trackFrames = 1 + pinFrames + 1;
 
-    // The reference pins the hero for seven viewport heights and scrubs; the
-    // wheel stands in for that here over the same distance.
+    const frameH = () => root!.clientHeight;
+    const maxScroll = () => frameH() * (trackFrames - 1);
+
+    function frame(scroll: number) {
+      const pin = frameH() * pinFrames;
+      apply(gsap.utils.clamp(0, 1, scroll / pin));
+      // Pinned until the spacer runs out, then it leaves with the page.
+      hero!.style.transform = `translateY(${-Math.max(0, scroll - pin)}px)`;
+      track!.style.transform = `translateY(${-scroll}px)`;
+    }
+
+    frame(0);
+
     const rate = Math.max(0.2, speed / 100);
-    let progress = 0;
+    let scroll = 0;
     let target = 0;
     let userDriven = false;
 
     function onWheel(e: WheelEvent) {
-      const travel = root!.clientHeight * (total / 100);
-      const next = gsap.utils.clamp(0, 1, target + (e.deltaY / travel) * rate);
+      const next = gsap.utils.clamp(0, maxScroll(), target + e.deltaY * rate);
       if (next === target) return;
       e.preventDefault();
       userDriven = true;
@@ -185,23 +211,31 @@ export default function StickyFlipCards({
       const dt = Math.min(0.1, (now - last) / 1000);
       last = now;
       if (autoPlay && !userDriven) {
-        target += dir * dt * 0.1 * rate;
-        if (target >= 1) {
-          target = 1;
+        target += dir * dt * maxScroll() * 0.08 * rate;
+        if (target >= maxScroll()) {
+          target = maxScroll();
           dir = -1;
         } else if (target <= 0) {
           target = 0;
           dir = 1;
         }
       }
-      progress += (target - progress) * Math.min(1, dt);
-      apply(progress);
+      scroll += (target - scroll) * smoothing(dt);
+      frame(scroll);
       raf = requestAnimationFrame(loop);
     }
     raf = requestAnimationFrame(loop);
 
+    const ro = new ResizeObserver(() => {
+      root!.style.setProperty("--frame-h", `${root!.clientHeight}px`);
+      frame(scroll);
+    });
+    root!.style.setProperty("--frame-h", `${root!.clientHeight}px`);
+    ro.observe(root);
+
     return () => {
       cancelAnimationFrame(raf);
+      ro.disconnect();
       gsap.killTweensOf(cards);
       root.removeEventListener("wheel", onWheel);
     };
@@ -227,10 +261,13 @@ export default function StickyFlipCards({
         containerType: "inline-size",
       }}
     >
-      <div
-        ref={headlineRef}
-        className="absolute inset-0 flex items-center justify-center will-change-transform"
-      >
+      {/* The pinned hero: fixed for the length of the pin, then it scrolls
+          away and the about section, which paints over it, takes the frame. */}
+      <div ref={heroRef} className="absolute inset-0 z-0 will-change-transform">
+        <div
+          ref={headlineRef}
+          className="absolute inset-0 flex items-center justify-center will-change-transform"
+        >
         <h1
           className="w-[60%] text-center uppercase font-black leading-[0.85]"
           style={{ fontFamily, fontSize: `clamp(calc(1.6rem * ${scale}), calc(5cqw * ${scale}), calc(7rem * ${scale}))` }}
@@ -239,10 +276,10 @@ export default function StickyFlipCards({
         </h1>
       </div>
 
-      <div
-        className="absolute inset-0 overflow-hidden"
-        style={{ perspective: "1000px", transformStyle: "preserve-3d" }}
-      >
+        <div
+          className="absolute inset-0 overflow-hidden"
+          style={{ perspective: "1000px", transformStyle: "preserve-3d" }}
+        >
         <div
           ref={frontRef}
           className={cardBase}
@@ -303,6 +340,24 @@ export default function StickyFlipCards({
             </div>
           );
         })}
+        </div>
+      </div>
+
+      {/* The scrolling document: the hero's own frame, the spacer pinSpacing
+          inserts for the pin, then the about section. */}
+      <div ref={trackRef} className="absolute top-0 left-0 w-full z-[1] will-change-transform">
+        <div className="w-full" style={{ height: "calc(var(--frame-h, 100%) * 8)" }} />
+        <div
+          className="w-full flex items-center justify-center"
+          style={{ height: "var(--frame-h, 100%)", background: aboutBackground }}
+        >
+          <h3
+            className="w-[60%] text-center uppercase font-black leading-[0.85]"
+            style={{ fontFamily, fontSize: `clamp(calc(1.1rem * ${scale}), calc(3cqw * ${scale}), calc(5rem * ${scale}))` }}
+          >
+            {aboutText}
+          </h3>
+        </div>
       </div>
     </div>
   );

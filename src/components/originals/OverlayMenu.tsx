@@ -172,7 +172,7 @@ export default function OverlayMenu({
 
       {/* Panels and the menu itself share a wrapper that starts at the top edge,
           so every layer grows downward from under the bar. */}
-      <div className="om-root absolute top-0 left-0 w-full h-full pointer-events-none z-[1]">
+      <div className="om-root absolute top-0 left-0 w-full pointer-events-none z-[1]">
         {panelColors.map((color, i) => (
           <div
             key={`${color}-${i}`}
@@ -184,7 +184,7 @@ export default function OverlayMenu({
 
         <div
           data-items
-          className="relative w-full h-full flex gap-8 will-change-[clip-path] overflow-hidden"
+          className="relative w-full flex gap-8 will-change-[clip-path] overflow-hidden"
           style={{
             background: menuColor,
             clipPath: CLOSED_CLIP,

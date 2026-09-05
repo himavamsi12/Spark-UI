@@ -17,6 +17,10 @@ const COLUMN_OFFSET_X = [0, -225, 225, 0];
 const HERO_PIN = 3.5;
 const ABOUT_OFFSET = 3.75;
 
+// Lenis' default lerp, plus the ScrollTrigger scrub: 1 catch-up on top of it.
+const lenisLerp = (dt: number) => 1 - Math.pow(0.9, dt * 60);
+const scrubLerp = (dt: number) => 1 - Math.exp(-dt);
+
 export default function WaabiScrollReveal({
   heroImage = "/waabi-scroll/hero.jpg",
   gallery = DEFAULT_GALLERY,
@@ -53,6 +57,7 @@ export default function WaabiScrollReveal({
   const scale = textScale / 100;
   const rootRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
   const heroImgRef = useRef<HTMLDivElement>(null);
   const heroHeaderRef = useRef<HTMLDivElement>(null);
   const heroCopyRef = useRef<HTMLHeadingElement>(null);
@@ -60,10 +65,11 @@ export default function WaabiScrollReveal({
   useEffect(() => {
     const root = rootRef.current;
     const track = trackRef.current;
+    const heroPin = heroRef.current;
     const heroImg = heroImgRef.current;
     const heroHeader = heroHeaderRef.current;
     const heroCopy = heroCopyRef.current;
-    if (!root || !track || !heroImg || !heroHeader || !heroCopy) return;
+    if (!root || !track || !heroPin || !heroImg || !heroHeader || !heroCopy) return;
 
     const words = [...heroCopy.querySelectorAll<HTMLSpanElement>("[data-word]")];
     const columns = [...track.querySelectorAll<HTMLDivElement>("[data-col]")];
@@ -131,6 +137,7 @@ export default function WaabiScrollReveal({
 
     const rate = Math.max(0.2, speed / 100);
     let scroll = 0;
+    let smoothScroll = 0;
     let target = 0;
     let userDriven = false;
 
@@ -141,9 +148,11 @@ export default function WaabiScrollReveal({
 
     function frame(value: number) {
       const pinLength = root!.clientHeight * HERO_PIN;
-      // Hero stays put for its pin, then the whole track scrolls past it.
       const heroProgress = gsap.utils.clamp(0, 1, value / pinLength);
       applyHero(heroProgress);
+      // pinSpacing is false, so the hero adds no scroll space: once its pin
+      // ends it returns to the flow and leaves the frame with the page.
+      heroPin!.style.transform = `translateY(${-Math.max(0, value - pinLength)}px)`;
       track!.style.transform = `translateY(${-value}px)`;
       applyColumns(value);
     }
@@ -175,7 +184,8 @@ export default function WaabiScrollReveal({
           dir = 1;
         }
       }
-      scroll += (target - scroll) * Math.min(1, dt * 6);
+      smoothScroll += (target - smoothScroll) * lenisLerp(dt);
+      scroll += (smoothScroll - scroll) * scrubLerp(dt);
       frame(scroll);
       raf = requestAnimationFrame(loop);
     }
@@ -213,7 +223,7 @@ export default function WaabiScrollReveal({
       {/* The hero is pinned, so it lives outside the scrolling track, and sits
           under it: the reference pins with pinSpacing false, leaving `.about` a
           later positioned sibling that rides up over the shrinking image. */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
+      <div ref={heroRef} className="absolute inset-0 z-0 pointer-events-none will-change-transform">
         <div
           ref={heroImgRef}
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 overflow-hidden will-change-[width,height]"

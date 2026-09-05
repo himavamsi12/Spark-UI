@@ -8,6 +8,9 @@ const ASPECT_RATIOS = ["3/2", "4/3", "5/4", "7/5"];
 
 const IMAGE_BASE_HEIGHT = 375;
 
+// Lenis' default lerp; these triggers have no scrub, so they track it directly.
+const smoothing = (dt: number) => 1 - Math.pow(0.9, dt * 60);
+
 export default function ScrollWaveGallery({
   images = DEFAULT_IMAGES,
   intro = "Loose Structure",
@@ -146,7 +149,7 @@ export default function ScrollWaveGallery({
           dir = 1;
         }
       }
-      scroll += (target - scroll) * Math.min(1, dt * 8);
+      scroll += (target - scroll) * smoothing(dt);
       track!.style.transform = `translateY(${-scroll}px)`;
       apply(scroll);
       raf = requestAnimationFrame(loop);
@@ -185,7 +188,7 @@ export default function ScrollWaveGallery({
           </h1>
         </div>
 
-        <div className="flex flex-col items-start p-8">
+        <div className="flex flex-col items-start p-8 overflow-hidden">
           {images.map((src, i) => (
             <div
               key={`${src}-${i}`}

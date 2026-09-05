@@ -5,6 +5,14 @@ import gsap from "gsap";
 
 const DEFAULT_IMAGES = Array.from({ length: 10 }, (_, i) => `/spiral-gallery/img${i + 1}.jpg`);
 
+// The reference's hero is 150svh and the canvas fills it, so the WebGL viewport
+// is taller than the frame and scrolls with the page behind the type.
+const HERO_FRAMES = 1.5;
+const TRACK_FRAMES = HERO_FRAMES + 1;
+
+// Lenis' default lerp; the camera keeps its own easing on top of this.
+const smoothing = (dt: number) => 1 - Math.pow(0.9, dt * 60);
+
 const VERTEX_SHADER = `
   varying vec2 vUv;
   varying vec3 vWorldNormal;
@@ -36,7 +44,9 @@ const FRAGMENT_SHADER = `
 export default function SpiralImageGallery({
   images = DEFAULT_IMAGES,
   headline = "Somewhere between structure and disorder new forms quietly start to emerge",
+  aboutText = "New forms begin here",
   background = "#242424",
+  aboutBackground = "#171717",
   textColor = "#d2d2d2",
   tilesPerRevolution = 15,
   revolutions = 5,
@@ -52,7 +62,9 @@ export default function SpiralImageGallery({
 }: {
   images?: string[];
   headline?: string;
+  aboutText?: string;
   background?: string;
+  aboutBackground?: string;
   textColor?: string;
   tilesPerRevolution?: number;
   revolutions?: number;
@@ -68,12 +80,14 @@ export default function SpiralImageGallery({
 }) {
   const scale = textScale / 100;
   const rootRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const hostRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const root = rootRef.current;
+    const track = trackRef.current;
     const host = hostRef.current;
-    if (!root || !host) return;
+    if (!root || !track || !host) return;
 
     let disposed = false;
     let cleanup = () => {};
@@ -104,10 +118,12 @@ export default function SpiralImageGallery({
       const totalTiles = Math.floor(CONFIG.tilesPerRevolution * CONFIG.revolutions);
       const angleStep = (Math.PI * 2) / CONFIG.tilesPerRevolution;
 
+      const heroHeight = () => root!.clientHeight * HERO_FRAMES;
+
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(
         75,
-        root!.clientWidth / root!.clientHeight,
+        root!.clientWidth / heroHeight(),
         0.1,
         1000,
       );
@@ -115,7 +131,7 @@ export default function SpiralImageGallery({
 
       const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.setSize(root!.clientWidth, root!.clientHeight, false);
+      renderer.setSize(root!.clientWidth, heroHeight(), false);
       host.appendChild(renderer.domElement);
       renderer.domElement.style.display = "block";
       renderer.domElement.style.width = "100%";
@@ -213,14 +229,17 @@ export default function SpiralImageGallery({
       const spiralHeight = Math.abs(tileEdgesY[totalTiles]);
 
       const rate = Math.max(0.2, speed / 100);
-      let scrollProgress = 0;
+      // Scroll is tracked in pixels, as the reference reads pageYOffset, and
+      // saturates at 1.25 frames while the page keeps scrolling to 1.5.
+      let scroll = 0;
       let target = 0;
       let spinVelocity = 0;
       let userDriven = false;
 
+      const maxScroll = () => root!.clientHeight * (TRACK_FRAMES - 1);
+
       function onWheel(e: WheelEvent) {
-        const travel = root!.clientHeight * CONFIG.scrollMultiplier;
-        const next = gsap.utils.clamp(0, 1, target + (e.deltaY / travel) * rate);
+        const next = gsap.utils.clamp(0, maxScroll(), target + e.deltaY * rate);
         if (next === target) return;
         e.preventDefault();
         userDriven = true;
@@ -250,19 +269,24 @@ export default function SpiralImageGallery({
         last = now;
 
         if (autoPlay && !userDriven) {
-          target += dir * dt * 0.12 * rate;
-          if (target >= 1) {
-            target = 1;
+          target += dir * dt * maxScroll() * 0.12 * rate;
+          if (target >= maxScroll()) {
+            target = maxScroll();
             dir = -1;
           } else if (target <= 0) {
             target = 0;
             dir = 1;
           }
         }
-        scrollProgress += (target - scrollProgress) * Math.min(1, dt * 6);
+        scroll += (target - scroll) * smoothing(dt);
+        track!.style.transform = `translateY(${-scroll}px)`;
 
+        const progress = Math.min(
+          scroll / (root!.clientHeight * CONFIG.scrollMultiplier),
+          1,
+        );
         camera.position.y +=
-          (-(scrollProgress * spiralHeight * CONFIG.cameraYMultiplier) - camera.position.y) *
+          (-(progress * spiralHeight * CONFIG.cameraYMultiplier) - camera.position.y) *
           CONFIG.cameraSmoothing;
 
         const narrow = root!.clientWidth < 1000;
@@ -285,12 +309,13 @@ export default function SpiralImageGallery({
 
       const ro = new ResizeObserver(() => {
         const w = root!.clientWidth;
-        const h = root!.clientHeight;
-        camera.aspect = w / h;
+        root!.style.setProperty("--frame-h", `${root!.clientHeight}px`);
+        camera.aspect = w / heroHeight();
         camera.position.z = w < 1000 ? 15 : CONFIG.cameraZ;
         camera.updateProjectionMatrix();
-        renderer.setSize(w, h, false);
+        renderer.setSize(w, heroHeight(), false);
       });
+      root!.style.setProperty("--frame-h", `${root!.clientHeight}px`);
       ro.observe(root!);
 
       cleanup = () => {
@@ -334,20 +359,43 @@ export default function SpiralImageGallery({
         containerType: "inline-size",
       }}
     >
-      <div ref={hostRef} className="absolute inset-0" />
+      {/* The document: a 150svh hero carrying the canvas, then the about
+          section. The canvas is appended after the type in the reference, so
+          the spiral passes in front of the headline. */}
+      <div ref={trackRef} className="absolute top-0 left-0 w-full will-change-transform">
+        <div
+          className="relative w-full overflow-hidden"
+          style={{ height: `calc(var(--frame-h, 100%) * ${HERO_FRAMES})`, background }}
+        >
+          <h1
+            className="relative uppercase leading-[0.8] tracking-[-0.04em] pointer-events-none"
+            style={{
+              padding: "clamp(1rem, 2cqw, 2rem)",
+              textAlign: "justify",
+              fontSize: `clamp(calc(1.5rem * ${scale}), calc(10cqw * ${scale}), calc(15rem * ${scale}))`,
+            }}
+          >
+            {headline}
+          </h1>
+          <div ref={hostRef} className="absolute inset-0 pointer-events-none" />
+        </div>
 
-      <h1
-        className="absolute inset-0 uppercase leading-[0.8] tracking-[-0.04em] pointer-events-none"
-        style={{
-          padding: "clamp(1rem, 2cqw, 2rem)",
-          textAlign: "justify",
-          // The reference sets this against a 150svh section; the frame here is
-          // far shorter, so the ratio is trimmed to keep the block inside it.
-          fontSize: `clamp(calc(1.25rem * ${scale}), calc(6cqw * ${scale}), calc(15rem * ${scale}))`,
-        }}
-      >
-        {headline}
-      </h1>
+        <div
+          className="w-full flex items-center justify-center text-center overflow-hidden"
+          style={{
+            height: "var(--frame-h, 100%)",
+            padding: "clamp(1rem, 2cqw, 2rem)",
+            background: aboutBackground,
+          }}
+        >
+          <h3
+            className="uppercase leading-[0.8] tracking-[-0.04em]"
+            style={{ fontSize: `clamp(calc(1.25rem * ${scale}), calc(5cqw * ${scale}), calc(7.5rem * ${scale}))` }}
+          >
+            {aboutText}
+          </h3>
+        </div>
+      </div>
     </div>
   );
 }
