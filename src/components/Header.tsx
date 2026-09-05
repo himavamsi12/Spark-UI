@@ -87,9 +87,8 @@ export default function Header() {
           <GithubMark size={15} />
           <span className="hidden sm:inline">Star on GitHub</span>
         </a>
-        {/* TODO: swap "#" for the real sponsor/tip link once it's set up. */}
         <a
-          href="#"
+          href="https://buymeachai.in/himavamsi.kummari"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-1.5 bg-accent text-void text-sm font-medium px-3.5 py-2 rounded-pills hover:brightness-110 transition-[filter] shadow-[0_0_20px_-4px_var(--accent)]"
