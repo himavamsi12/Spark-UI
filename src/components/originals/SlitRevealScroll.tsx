@@ -12,7 +12,7 @@ export default function SlitRevealScroll({
   fontFamily = "var(--font-neue-montreal)",
   textScale = 100,
   speed = 100,
-  autoPlay = true,
+  autoPlay = false,
 }: {
   accentColor?: string;
   outroText?: string;
@@ -89,9 +89,14 @@ export default function SlitRevealScroll({
     let progress = 0;
     let target = 0;
 
+    // The reference pins the hero for five viewport heights, so a full pass of
+    // the timeline costs that much scrolling. Matching the divisor keeps the
+    // wheel feeling the same as scrolling the original page.
+    const travel = () => window.innerHeight * 5;
+
     let userDriven = false;
     function onWheel(e: WheelEvent) {
-      const next = gsap.utils.clamp(0, 1, target + e.deltaY * 0.0007 * rate);
+      const next = gsap.utils.clamp(0, 1, target + (e.deltaY / travel()) * rate);
       // At either end, let the wheel fall through so the page keeps scrolling.
       if (next === target) return;
       e.preventDefault();
@@ -102,9 +107,18 @@ export default function SlitRevealScroll({
 
     let raf = 0;
     let autoDir = 1;
-    function loop() {
+    let last = performance.now();
+    // ScrollTrigger's scrub: 1 takes about a second to catch up to the scroll
+    // position. Easing by dt/scrub reproduces that, and stays correct if the
+    // display is not running at 60fps.
+    const SCRUB = 1 / rate;
+
+    function loop(now: number) {
+      const dt = Math.min(0.1, (now - last) / 1000);
+      last = now;
+
       if (autoPlay && !userDriven) {
-        target += autoDir * 0.0045 * rate;
+        target += autoDir * dt * 0.18 * rate;
         if (target >= 1) {
           target = 1;
           autoDir = -1;
@@ -113,11 +127,12 @@ export default function SlitRevealScroll({
           autoDir = 1;
         }
       }
-      progress += (target - progress) * 0.08;
+
+      progress += (target - progress) * Math.min(1, dt / SCRUB);
       applyProgress(progress);
       raf = requestAnimationFrame(loop);
     }
-    loop();
+    raf = requestAnimationFrame(loop);
 
     return () => {
       cancelAnimationFrame(raf);

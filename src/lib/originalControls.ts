@@ -433,7 +433,7 @@ export const ORIGINALS: OriginalEntry[] = [
       { key: "outroText", label: "Outro Text", type: "text", default: "You become the shape that the light finally learns to find.", description: "Closing line revealed at the end.", multiline: true },
       { key: "fontFamily", label: "Font", type: "font", default: "var(--font-neue-montreal)", description: "Typeface used for all text." },
       { key: "textScale", label: "Text Scale", type: "fontScale", default: 100, min: 50, max: 200, step: 10, description: "Relative size of every text element." },
-      { key: "autoPlay", label: "Auto Play", type: "toggle", default: true, description: "Sweep through the phases automatically." },
+      { key: "autoPlay", label: "Auto Play", type: "toggle", default: false, description: "Off matches the reference, which only moves with the scroll. Sweep through the phases automatically." },
       { key: "speed", label: "Speed", type: "slider", default: 100, min: 30, max: 220, step: 10, description: "Auto-play and scroll sensitivity multiplier." },
     ],
   },
