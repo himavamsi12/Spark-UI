@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -9,7 +10,16 @@ export default function Footer() {
           <span className="flex items-center gap-1.5 text-xs text-muted">
             Made with
             <img src="/icons/pixel-heart.png" alt="love" className="w-3.5 h-3.5" draggable={false} />
-            by Vamsi
+            by{" "}
+            <a
+              href="https://www.linkedin.com/in/hima-vamsi-297744250/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-0.5 hover:text-pearl transition-colors"
+            >
+              Vamsi
+              <ArrowUpRight className="w-3 h-3" />
+            </a>
           </span>
         </div>
         <div className="flex items-center gap-5">
