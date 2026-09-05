@@ -39,6 +39,13 @@ export const ORIGINAL_SOURCE_FILES: Record<string, string> = {
   "smudge-revealer": "SmudgeRevealer",
   "fluid-cursor": "FluidCursor",
   "access-gate-reveal": "AccessGateReveal",
+  "sticky-flip-cards": "StickyFlipCards",
+  "overlay-menu": "OverlayMenu",
+  "ripple-slider": "RippleSlider",
+  "scroll-wave-gallery": "ScrollWaveGallery",
+  "spiral-image-gallery": "SpiralImageGallery",
+  "stroke-page-transition": "StrokePageTransition",
+  "waabi-scroll-reveal": "WaabiScrollReveal",
 };
 
 export function sourceFileFor(slug: string): string | undefined {

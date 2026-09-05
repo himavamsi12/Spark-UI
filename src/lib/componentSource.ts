@@ -33,26 +33,45 @@ export function listComponentSlugs(): string[] {
 /** npm packages a component imports, so users know what to install. */
 function detectDependencies(code: string): string[] {
   const deps = new Set<string>();
-  for (const m of code.matchAll(/from\s+"([^".][^"]*)"/g)) {
-    const spec = m[1];
-    if (spec.startsWith(".") || spec.startsWith("@/") || spec.startsWith("node:")) continue;
+  const add = (spec: string) => {
+    if (spec.startsWith(".") || spec.startsWith("@/") || spec.startsWith("node:")) return;
     // "gsap/SplitText" -> "gsap"; "@scope/pkg/sub" -> "@scope/pkg"
     const parts = spec.split("/");
     deps.add(spec.startsWith("@") ? parts.slice(0, 2).join("/") : parts[0]);
-  }
+  };
+  for (const m of code.matchAll(/from\s+"([^".][^"]*)"/g)) add(m[1]);
+  // Heavy libraries are loaded with a dynamic import so they stay out of the
+  // initial bundle; those are still real dependencies to install.
+  for (const m of code.matchAll(/\bimport\(\s*["']([^"']+)["']\s*\)/g)) add(m[1]);
   deps.delete("react");
   return [...deps].sort();
 }
 
+const ASSET_RE = /^\/[a-z0-9][a-z0-9._/-]*\.(?:jpg|jpeg|png|svg|webp|mp4|webm)$/i;
+
 /** Static asset paths the component references, so users can copy them across. */
-function detectAssets(code: string): string[] {
+function detectAssets(code: string, controls: ControlDef[]): string[] {
   const assets = new Set<string>();
   for (const m of code.matchAll(/["'`](\/[a-z0-9][a-z0-9._/-]*\.(?:jpg|jpeg|png|svg|webp|mp4|webm))["'`]/gi)) {
     assets.add(m[1]);
   }
-  // Template-literal paths like `/dir/img-${i}.jpg` collapse to their directory.
+
+  // A component that builds its paths in a loop (`/dir/img${i}.jpg`) exposes no
+  // literal to match, but its image controls carry the real list as defaults,
+  // so take the exact filenames from there rather than emitting a wildcard the
+  // CLI cannot expand.
+  for (const c of controls) {
+    if (c.type !== "image" && c.type !== "imageList") continue;
+    const values = Array.isArray(c.default) ? c.default : [c.default];
+    for (const v of values) {
+      if (typeof v === "string" && ASSET_RE.test(v)) assets.add(v);
+    }
+  }
+
+  // Anything still only known as a template keeps its directory wildcard.
   for (const m of code.matchAll(/`(\/[a-z0-9-]+)\/[^`]*\$\{[^`]*`/gi)) {
-    assets.add(`${m[1]}/*`);
+    const dir = m[1];
+    if (![...assets].some((a) => a.startsWith(`${dir}/`))) assets.add(`${dir}/*`);
   }
   return [...assets].sort();
 }
@@ -147,6 +166,6 @@ export async function getComponentSource(slug: string): Promise<ComponentSource 
       description: c.description ?? c.label,
     })),
     dependencies: detectDependencies(code),
-    assets: detectAssets(code),
+    assets: detectAssets(code, entry.controls),
   };
 }

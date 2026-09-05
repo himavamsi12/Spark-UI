@@ -35,6 +35,13 @@ import PhysicsTagHover from "./PhysicsTagHover";
 import SmudgeRevealer from "./SmudgeRevealer";
 import FluidCursor from "./FluidCursor";
 import AccessGateReveal from "./AccessGateReveal";
+import StickyFlipCards from "./StickyFlipCards";
+import OverlayMenu from "./OverlayMenu";
+import RippleSlider from "./RippleSlider";
+import ScrollWaveGallery from "./ScrollWaveGallery";
+import SpiralImageGallery from "./SpiralImageGallery";
+import StrokePageTransition from "./StrokePageTransition";
+import WaabiScrollReveal from "./WaabiScrollReveal";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ORIGINAL_COMPONENTS: Record<string, React.ComponentType<any>> = {
@@ -75,4 +82,11 @@ export const ORIGINAL_COMPONENTS: Record<string, React.ComponentType<any>> = {
   "smudge-revealer": SmudgeRevealer,
   "fluid-cursor": FluidCursor,
   "access-gate-reveal": AccessGateReveal,
+  "sticky-flip-cards": StickyFlipCards,
+  "overlay-menu": OverlayMenu,
+  "ripple-slider": RippleSlider,
+  "scroll-wave-gallery": ScrollWaveGallery,
+  "spiral-image-gallery": SpiralImageGallery,
+  "stroke-page-transition": StrokePageTransition,
+  "waabi-scroll-reveal": WaabiScrollReveal,
 };
