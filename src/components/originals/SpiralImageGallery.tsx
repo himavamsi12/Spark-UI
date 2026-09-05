@@ -10,6 +10,12 @@ const DEFAULT_IMAGES = Array.from({ length: 10 }, (_, i) => `/spiral-gallery/img
 const HERO_FRAMES = 1.5;
 const TRACK_FRAMES = HERO_FRAMES + 1;
 
+// The reference's hero is 1.5x a roughly 16:9 window, so its camera frames the
+// ribbon at about this aspect. three's field of view is vertical, so a wider
+// frame than this only reveals more empty world and shrinks the ribbon; keeping
+// the horizontal extent fixed instead frames it as intended at any shape.
+const DESIGN_ASPECT = 1.2;
+
 // Lenis' default lerp; the camera keeps its own easing on top of this.
 const smoothing = (dt: number) => 1 - Math.pow(0.9, dt * 60);
 
@@ -119,6 +125,10 @@ export default function SpiralImageGallery({
       const angleStep = (Math.PI * 2) / CONFIG.tilesPerRevolution;
 
       const heroHeight = () => root!.clientHeight * HERO_FRAMES;
+      const cameraDistance = () => {
+        const aspect = root!.clientWidth / heroHeight();
+        return gsap.utils.clamp(6, 24, CONFIG.cameraZ * (DESIGN_ASPECT / aspect));
+      };
 
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(
@@ -127,7 +137,7 @@ export default function SpiralImageGallery({
         0.1,
         1000,
       );
-      camera.position.z = CONFIG.cameraZ;
+      camera.position.z = cameraDistance();
 
       const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -145,7 +155,7 @@ export default function SpiralImageGallery({
         }),
       );
 
-      const cameraPositionUniform = { value: new THREE.Vector3(0, 0, CONFIG.cameraZ) };
+      const cameraPositionUniform = { value: new THREE.Vector3(0, 0, camera.position.z) };
 
       // Each tile's top edge is the previous tile's bottom, so the ribbon has
       // no gaps as the radius tightens.
@@ -311,7 +321,7 @@ export default function SpiralImageGallery({
         const w = root!.clientWidth;
         root!.style.setProperty("--frame-h", `${root!.clientHeight}px`);
         camera.aspect = w / heroHeight();
-        camera.position.z = w < 1000 ? 15 : CONFIG.cameraZ;
+        camera.position.z = cameraDistance();
         camera.updateProjectionMatrix();
         renderer.setSize(w, heroHeight(), false);
       });
