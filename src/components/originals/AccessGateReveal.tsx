@@ -220,7 +220,7 @@ export default function AccessGateReveal({
   const readout = { fontFamily: monoFont, fontSize: `calc(0.75rem * ${scale})` };
 
   return (
-    <div className="relative w-full h-full overflow-hidden" style={{ fontFamily, containerType: "inline-size" }}>
+    <div className="relative w-full h-full overflow-hidden" style={{ isolation: "isolate", fontFamily, containerType: "inline-size" }}>
       {/* Readout layer behind everything, seen around the scaled-down page */}
       <div
         className="absolute inset-0 flex flex-col justify-between z-0"

@@ -199,7 +199,7 @@ export default function LensZoomScroll({
     <div
       ref={rootRef}
       className="relative w-full h-full overflow-hidden text-white"
-      style={{ background, fontFamily, containerType: "inline-size" }}
+      style={{ isolation: "isolate", background, fontFamily, containerType: "inline-size" }}
     >
       {/* The artwork sits on the floor of the frame and grows from there. */}
       {/* The reference sizes the drawing at 700px wide inside a full-height

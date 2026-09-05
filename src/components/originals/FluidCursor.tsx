@@ -289,7 +289,7 @@ export default function FluidCursor({
     <div
       ref={rootRef}
       className="relative w-full h-full overflow-hidden"
-      style={{ background, fontFamily, containerType: "inline-size" }}
+      style={{ isolation: "isolate", background, fontFamily, containerType: "inline-size" }}
     >
       <nav
         className="absolute top-0 left-0 w-full flex items-start justify-between gap-4 p-8 z-[2]"

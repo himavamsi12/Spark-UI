@@ -63,7 +63,7 @@ export default function AccordionFrames({
   const indicator = panelPosition(focused);
 
   return (
-    <div className="relative w-full h-full overflow-hidden" style={{ background }}>
+    <div className="relative w-full h-full overflow-hidden" style={{ isolation: "isolate", background }}>
       <div
         ref={trackRef}
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-[1400px]"

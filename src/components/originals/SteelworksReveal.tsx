@@ -166,7 +166,7 @@ export default function SteelworksReveal({
     <div
       ref={rootRef}
       className="relative w-full h-full overflow-hidden"
-      style={{ background, fontFamily, containerType: "inline-size" }}
+      style={{ isolation: "isolate", background, fontFamily, containerType: "inline-size" }}
     >
       {images.map((src, i) => (
         <div

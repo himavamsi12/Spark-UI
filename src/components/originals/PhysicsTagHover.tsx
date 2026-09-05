@@ -189,7 +189,7 @@ export default function PhysicsTagHover({
     <div
       ref={rootRef}
       className="relative w-full h-full flex flex-col justify-center items-center p-8 overflow-hidden"
-      style={{ background, color: nameColor, fontFamily, containerType: "inline-size" }}
+      style={{ isolation: "isolate", background, color: nameColor, fontFamily, containerType: "inline-size" }}
     >
       {services.map((service, i) => (
         <div

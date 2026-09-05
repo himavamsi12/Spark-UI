@@ -108,7 +108,7 @@ export default function ClipMaskPageTransition({
   useEffect(() => () => void tlRef.current?.kill(), []);
 
   return (
-    <div className="relative w-full h-full overflow-hidden bg-[#0f0f0f]" style={{ fontFamily }}>
+    <div className="relative w-full h-full overflow-hidden bg-[#0f0f0f]" style={{ isolation: "isolate", fontFamily }}>
       {/* Page */}
       <div
         className="absolute inset-0 flex items-center justify-center"

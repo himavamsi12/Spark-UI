@@ -212,7 +212,7 @@ export default function DissolveImageReveal({
     <div
       ref={rootRef}
       className="relative w-full h-full overflow-hidden bg-[#141414]"
-      style={{ fontFamily }}
+      style={{ isolation: "isolate", fontFamily }}
     >
       {images.map((src, i) => (
         <div

@@ -187,7 +187,7 @@ export default function MosaicFlipHover({
   return (
     <div
       className="relative w-full h-full overflow-hidden flex items-center justify-center"
-      style={{ background, perspective: "800px", transformStyle: "preserve-3d", fontFamily }}
+      style={{ isolation: "isolate", background, perspective: "800px", transformStyle: "preserve-3d", fontFamily }}
     >
       <div
         ref={previewRef}

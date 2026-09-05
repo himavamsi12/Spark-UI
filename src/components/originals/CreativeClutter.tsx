@@ -189,7 +189,7 @@ export default function CreativeClutter({
     <div
       ref={deskRef}
       className="relative w-full h-full overflow-hidden"
-      style={{ background, fontFamily, containerType: "inline-size" }}
+      style={{ isolation: "isolate", background, fontFamily, containerType: "inline-size" }}
     >
       <div ref={headerRef} className="absolute top-0 left-0 w-[min(420px,60%)] z-[2]" style={{ color: textColor }}>
         <h1
