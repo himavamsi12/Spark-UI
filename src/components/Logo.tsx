@@ -14,8 +14,18 @@ export default function Logo({ size = 24, strikeId = 0 }: { size?: number; strik
           <stop offset="0%" stopColor="var(--color-iris-glow)" />
           <stop offset="100%" stopColor="#7c2d12" />
         </linearGradient>
+        <linearGradient id="logoDropGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="var(--color-lavender-beam)" stopOpacity="0" />
+          <stop offset="50%" stopColor="#fff4dd" stopOpacity="0.95" />
+          <stop offset="100%" stopColor="var(--color-lavender-beam)" stopOpacity="0" />
+        </linearGradient>
         <clipPath id="logoClip">
           <rect x="58" y="38" width="124" height="124" rx="27" />
+        </clipPath>
+        {/* Grows from the top down, so the bolt fills within its own outline
+            instead of the whole shape sliding into place. */}
+        <clipPath id="boltReveal">
+          <rect key={`reveal-${strikeId}`} x="60" y="40" width="120" style={{ animation: "originThunderReveal 1s cubic-bezier(0.6, 0, 0.4, 1) both" }} />
         </clipPath>
       </defs>
 
@@ -40,18 +50,29 @@ export default function Logo({ size = 24, strikeId = 0 }: { size?: number; strik
           width="120"
           height="120"
           fill="var(--color-lavender-beam)"
-          style={{ animation: "originThunderFlash 0.85s ease-out both", mixBlendMode: "screen" }}
+          style={{ animation: "originThunderFlash 1s ease-out both", mixBlendMode: "screen" }}
         />
 
-        <g
-          key={`bolt-${strikeId}`}
-          style={{ transformOrigin: "120px 40px", animation: "originThunderFall 0.85s cubic-bezier(0.16, 1, 0.3, 1) both" }}
-        >
+        {/* The bolt itself: revealed top-to-bottom by boltReveal, then blinks
+            once it has fully formed. */}
+        <g key={`bolt-${strikeId}`} clipPath="url(#boltReveal)" style={{ animation: "originThunderBlink 1s ease-out both" }}>
           <path d="M140 66 L92 114 L116 114 L106 138 L152 92 L126 92 Z" fill="url(#logoGradShadow)" transform="translate(4,4)" />
           <path d="M138 62 L88 112 L114 112 L124 88 Z" fill="url(#logoGradTop)" />
           <path d="M114 112 L102 138 L152 88 L124 88 Z" fill="url(#logoGradMid)" />
           <path d="M138 62 L124 88 L114 88 Z" fill="#fef3c7" opacity="0.8" />
         </g>
+
+        {/* A bright leading edge that travels down with the fill, like the
+            falling light forming the bolt rather than the bolt itself moving. */}
+        <rect
+          key={`drop-${strikeId}`}
+          x="80"
+          y="34"
+          width="90"
+          height="12"
+          fill="url(#logoDropGlow)"
+          style={{ animation: "originThunderDrop 0.62s ease-in both", mixBlendMode: "screen" }}
+        />
       </g>
     </svg>
   );

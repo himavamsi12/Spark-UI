@@ -251,46 +251,64 @@ input[type="color"].swatch::-moz-color-swatch {
   }
 }
 
-@keyframes originThunderFall {
+@keyframes originThunderReveal {
   0% {
-    transform: translateY(-90px) scaleY(1.35);
-    opacity: 0;
-    filter: drop-shadow(0 0 0px rgba(255, 200, 110, 0));
+    height: 0px;
   }
-  38% {
-    opacity: 1;
-  }
-  46% {
-    transform: translateY(6px) scaleY(0.88);
-    filter: drop-shadow(0 0 16px rgba(255, 210, 130, 1));
-  }
-  62% {
-    transform: translateY(-4px) scaleY(1.04);
-    filter: drop-shadow(0 0 4px rgba(255, 170, 80, 0.5));
-  }
-  80% {
-    transform: translateY(1px) scaleY(0.99);
-    filter: drop-shadow(0 0 0px rgba(255, 170, 80, 0));
+  58% {
+    height: 120px;
   }
   100% {
-    transform: translateY(0) scaleY(1);
+    height: 120px;
+  }
+}
+
+@keyframes originThunderDrop {
+  0% {
+    transform: translateY(0px);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.95;
+  }
+  85%,
+  100% {
+    transform: translateY(108px);
+    opacity: 0;
+  }
+}
+
+@keyframes originThunderBlink {
+  0%,
+  58% {
     opacity: 1;
-    filter: drop-shadow(0 0 0px rgba(255, 170, 80, 0));
+  }
+  65% {
+    opacity: 0.12;
+  }
+  71% {
+    opacity: 1;
+  }
+  79% {
+    opacity: 0.22;
+  }
+  85%,
+  100% {
+    opacity: 1;
   }
 }
 
 @keyframes originThunderFlash {
   0%,
-  40% {
+  55% {
     opacity: 0;
   }
-  46% {
+  61% {
     opacity: 0.9;
   }
-  58% {
-    opacity: 0.1;
+  75% {
+    opacity: 0.12;
   }
-  70%,
   100% {
     opacity: 0;
   }
