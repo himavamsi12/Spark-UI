@@ -988,6 +988,7 @@ export const ORIGINALS: OriginalEntry[] = [
       { key: "textColor", label: "Text Color", type: "color", default: "#000000", description: "Colour of the gallery and outro text." },
       { key: "heroTextColor", label: "Hero Text Color", type: "color", default: "#ffffff", description: "Colour of the text over the photo." },
       { key: "finalImageSize", label: "Final Size", type: "slider", default: 150, min: 60, max: 400, step: 10, description: "Size in pixels the hero photo shrinks to." },
+      { key: "tileGap", label: "Tile Gap", type: "slider", default: 5, min: 0, max: 40, step: 1, description: "Space in pixels between the images stacked in each column." },
       { key: "fontFamily", label: "Font", type: "font", default: "var(--font-inter), sans-serif", description: "Typeface throughout." },
       { key: "textScale", label: "Text Scale", type: "fontScale", default: 100, min: 50, max: 200, step: 10, description: "Relative size of all text." },
       { key: "speed", label: "Speed", type: "slider", default: 100, min: 50, max: 200, step: 10, description: "How far each scroll notch advances." },

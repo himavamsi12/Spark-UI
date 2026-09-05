@@ -38,6 +38,7 @@ export default function WaabiScrollReveal({
   textColor = "#000000",
   heroTextColor = "#ffffff",
   finalImageSize = 150,
+  tileGap = 5,
   fontFamily = "var(--font-inter), sans-serif",
   textScale = 100,
   speed = 100,
@@ -54,6 +55,7 @@ export default function WaabiScrollReveal({
   textColor?: string;
   heroTextColor?: string;
   finalImageSize?: number;
+  tileGap?: number;
   fontFamily?: string;
   textScale?: number;
   speed?: number;
@@ -325,6 +327,7 @@ export default function WaabiScrollReveal({
                 key={col}
                 data-col
                 className="relative h-[125%] flex flex-col justify-around will-change-transform"
+                style={{ rowGap: tileGap }}
               >
                 {gallery.slice(col * perColumn, col * perColumn + perColumn).map((src, i) => (
                   <div
