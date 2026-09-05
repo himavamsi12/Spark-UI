@@ -25,6 +25,9 @@ import GridShutterTransition from "./GridShutterTransition";
 import DissolveImageReveal from "./DissolveImageReveal";
 import MosaicFlipHover from "./MosaicFlipHover";
 import LensZoomScroll from "./LensZoomScroll";
+import AccordionFrames from "./AccordionFrames";
+import MagneticCards from "./MagneticCards";
+import SteelworksReveal from "./SteelworksReveal";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ORIGINAL_COMPONENTS: Record<string, React.ComponentType<any>> = {
@@ -55,4 +58,7 @@ export const ORIGINAL_COMPONENTS: Record<string, React.ComponentType<any>> = {
   "dissolve-image-reveal": DissolveImageReveal,
   "mosaic-flip-hover": MosaicFlipHover,
   "lens-zoom-scroll": LensZoomScroll,
+  "accordion-frames": AccordionFrames,
+  "magnetic-cards": MagneticCards,
+  "steelworks-reveal": SteelworksReveal,
 };

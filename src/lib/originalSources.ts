@@ -29,6 +29,9 @@ export const ORIGINAL_SOURCE_FILES: Record<string, string> = {
   "dissolve-image-reveal": "DissolveImageReveal",
   "mosaic-flip-hover": "MosaicFlipHover",
   "lens-zoom-scroll": "LensZoomScroll",
+  "accordion-frames": "AccordionFrames",
+  "magnetic-cards": "MagneticCards",
+  "steelworks-reveal": "SteelworksReveal",
 };
 
 export function sourceFileFor(slug: string): string | undefined {
