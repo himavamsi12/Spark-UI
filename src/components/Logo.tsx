@@ -62,6 +62,22 @@ export default function Logo({ size = 24, strikeId = 0 }: { size?: number; strik
           <path d="M138 62 L124 88 L114 88 Z" fill="#fef3c7" opacity="0.8" />
         </g>
 
+        {/* Traces the bolt's own zigzag outline from its top tip down to its
+            base, so the shape draws itself into being as it falls rather than
+            just wiping into view. Its length (254) is the hexagon's true
+            perimeter, so the dash offset lands exactly on the last vertex. */}
+        <path
+          key={`draw-${strikeId}`}
+          d="M138 62 L88 112 L114 112 L102 138 L152 88 L124 88 Z"
+          fill="none"
+          stroke="#fff7e6"
+          strokeWidth="3"
+          strokeLinejoin="round"
+          strokeLinecap="round"
+          strokeDasharray="254"
+          style={{ animation: "originThunderDraw 0.62s cubic-bezier(0.3, 0, 0.2, 1) both", filter: "drop-shadow(0 0 4px rgba(255, 230, 170, 0.9))" }}
+        />
+
         {/* A bright leading edge that travels down with the fill, like the
             falling light forming the bolt rather than the bolt itself moving. */}
         <rect

@@ -263,6 +263,21 @@ input[type="color"].swatch::-moz-color-swatch {
   }
 }
 
+@keyframes originThunderDraw {
+  0% {
+    stroke-dashoffset: 254;
+    opacity: 1;
+  }
+  75% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
 @keyframes originThunderDrop {
   0% {
     transform: translateY(0px);
