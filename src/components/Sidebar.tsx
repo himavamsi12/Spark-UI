@@ -58,6 +58,9 @@ export default function Sidebar({
 
   const [preview, setPreview] = useState<{ entry: ComponentEntry; top: number; left: number } | null>(null);
   const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Tracked outside state so handleEnter can tell "already showing" from "first
+  // hover" without waiting on a render.
+  const isShowing = useRef(false);
 
   function clearHoverTimer() {
     if (hoverTimer.current) {
@@ -66,22 +69,32 @@ export default function Sidebar({
     }
   }
 
+  function positionFor(el: HTMLElement) {
+    const rect = el.getBoundingClientRect();
+    const left = rect.right + 12;
+    // Clamp vertically so the card never runs off the bottom of the viewport.
+    const top = Math.min(Math.max(rect.top - 8, 8), window.innerHeight - PREVIEW_H - 8);
+    return { top, left };
+  }
+
   function handleEnter(entry: ComponentEntry, el: HTMLElement) {
     clearHoverTimer();
+    if (isShowing.current) {
+      // A preview is already up: follow the cursor straight to the next item,
+      // with the position change eased by CSS rather than a fresh delay, so
+      // sweeping down the list reads as one continuous glide.
+      setPreview({ entry, ...positionFor(el) });
+      return;
+    }
     hoverTimer.current = setTimeout(() => {
-      const rect = el.getBoundingClientRect();
-      const left = rect.right + 12;
-      // Clamp vertically so the card never runs off the bottom of the viewport.
-      const top = Math.min(
-        Math.max(rect.top - 8, 8),
-        window.innerHeight - PREVIEW_H - 8,
-      );
-      setPreview({ entry, top, left });
+      isShowing.current = true;
+      setPreview({ entry, ...positionFor(el) });
     }, HOVER_DELAY);
   }
 
   function handleLeave() {
     clearHoverTimer();
+    isShowing.current = false;
     setPreview(null);
   }
 
@@ -228,7 +241,7 @@ export default function Sidebar({
 
       {preview && (
         <div
-          className="hidden lg:block fixed z-50 pointer-events-none rounded-cards border border-border bg-card shadow-[0_20px_50px_-12px_rgba(0,0,0,0.7)] overflow-hidden"
+          className="hidden lg:block fixed z-50 pointer-events-none rounded-cards border border-border bg-card shadow-[0_20px_50px_-12px_rgba(0,0,0,0.7)] overflow-hidden transition-[top,left] duration-150 ease-out"
           style={{ top: preview.top, left: preview.left, width: PREVIEW_W }}
         >
           <div className="bg-void" style={{ height: PREVIEW_H }}>
