@@ -9,7 +9,7 @@ const TITLES = [
 ];
 
 export default function OrbitSlider({
-  autoRotate = true,
+  autoRotate = false,
   speed = 100,
   tiltMax = 30,
   fontFamily = "var(--font-commit-mono), monospace",
@@ -39,7 +39,7 @@ export default function OrbitSlider({
     if (!root || !stage || !orbit || !preview || !previewImg || !titleEl) return;
 
     orbit.innerHTML = "";
-    const orbitRadius = 130;
+    const orbitRadius = 400;
     const angleStep = 360 / TOTAL;
     for (let i = 0; i < TOTAL; i++) {
       const panel = document.createElement("div");
@@ -110,21 +110,26 @@ export default function OrbitSlider({
   }, [autoRotate, speed, tiltMax]);
 
   return (
-    <div ref={rootRef} className="relative w-full h-full overflow-hidden bg-[#eaeaea]" style={{ fontFamily, perspective: 900 }}>
+    <div ref={rootRef} className="relative w-full h-full overflow-hidden bg-[#eaeaea]" style={{ fontFamily, perspective: 2000 }}>
       <div ref={stageRef} className="absolute inset-0" style={{ transformStyle: "preserve-3d" }}>
         <div
           ref={orbitRef}
-          className="absolute top-1/2 left-1/2 w-[70px] h-[90px]"
+          className="absolute top-1/2 left-1/2 w-[100px] h-[125px]"
           style={{ transform: "translate(-50%, -50%)", transformStyle: "preserve-3d" }}
         />
       </div>
-      <div ref={previewRef} className="absolute top-1/2 left-1/2 w-[150px] h-[195px] overflow-hidden" style={{ transform: "translate(-50%, -50%)" }}>
+      <div ref={previewRef} className="absolute top-1/2 left-1/2 w-[250px] h-[325px] overflow-hidden" style={{ transform: "translate(-50%, -50%)" }}>
         <img ref={previewImgRef} src="/orbit-slider/img1.jpg" className="w-full h-full object-cover" alt="" />
       </div>
       <p
         ref={titleRef}
-        className="absolute bottom-4 left-1/2 -translate-x-1/2 font-mono uppercase bg-black text-white px-2 py-1 rounded"
-        style={{ fontSize: `calc(0.65rem * ${scale})` }}
+        className="absolute left-1/2 -translate-x-1/2 font-mono uppercase bg-black text-white"
+        style={{
+          bottom: "3rem",
+          padding: "0.2rem 0.4rem",
+          borderRadius: "3px",
+          fontSize: `calc(0.7rem * ${scale})`,
+        }}
       >
         Silent Bloom
       </p>
