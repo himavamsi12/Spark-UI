@@ -129,23 +129,23 @@ export default function SlitRevealScroll({
   return (
     <div ref={rootRef} className="relative w-full h-full overflow-hidden bg-[#dcdbd5]" style={{ fontFamily }}>
       <div className="absolute inset-0 flex z-0">
-        <div ref={copyLeftRef} className="flex-1 flex items-center p-4 will-change-transform">
-          <div className="flex flex-col gap-1 w-full">
-            <h3 className="uppercase font-medium" style={{ color: accentColor, fontSize: `clamp(calc(1.25rem * ${scale}),calc(3vw * ${scale}),calc(2rem * ${scale}))`, lineHeight: 0.9 }}>
+        <div className="flex-1 flex items-center p-8">
+          <div ref={copyLeftRef} className="flex flex-col gap-2 w-1/2 will-change-transform">
+            <h3 className="uppercase font-medium" style={{ color: accentColor, fontSize: `clamp(calc(2rem * ${scale}),calc(5vw * ${scale}),calc(8rem * ${scale}))`, lineHeight: 0.8, letterSpacing: "-0.03em" }}>
               Motion
             </h3>
-            <p className="uppercase font-medium" style={{ color: "#1a0401", fontSize: `calc(9px * ${scale})` }}>
-              Bodies drawn through engineered light and open dark.
+            <p className="uppercase font-medium" style={{ color: "#1a0401", fontSize: `calc(0.85rem * ${scale})`, lineHeight: 1.1 }}>
+              Bodies drawn through engineered light and open dark. Every frame caught between the signal and the shadow that it quietly leaves behind.
             </p>
           </div>
         </div>
-        <div ref={copyRightRef} className="flex-1 flex items-center justify-end p-4 will-change-transform">
-          <div className="flex flex-col gap-1 w-full items-end text-right">
-            <h3 className="uppercase font-medium" style={{ color: accentColor, fontSize: `clamp(calc(1.25rem * ${scale}),calc(3vw * ${scale}),calc(2rem * ${scale}))`, lineHeight: 0.9 }}>
+        <div className="flex-1 flex items-center justify-end p-8">
+          <div ref={copyRightRef} className="flex flex-col gap-2 w-1/2 will-change-transform">
+            <h3 className="uppercase font-medium" style={{ color: accentColor, fontSize: `clamp(calc(2rem * ${scale}),calc(5vw * ${scale}),calc(8rem * ${scale}))`, lineHeight: 0.8, letterSpacing: "-0.03em" }}>
               Silence
             </h3>
-            <p className="uppercase font-medium" style={{ color: "#1a0401", fontSize: `calc(9px * ${scale})` }}>
-              Stillness measured in reflected color and slow heat.
+            <p className="uppercase font-medium" style={{ color: "#1a0401", fontSize: `calc(0.85rem * ${scale})`, lineHeight: 1.1 }}>
+              Stillness measured in reflected color and slow heat. Where the moving crowd dissolves and only the burning outline holds against the night.
             </p>
           </div>
         </div>
@@ -160,8 +160,8 @@ export default function SlitRevealScroll({
         </div>
         <h3
           ref={outroHeaderRef}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 uppercase font-medium text-center w-[70%]"
-          style={{ color: "#dcdbd5", fontSize: `clamp(calc(1.1rem * ${scale}),calc(2.5vw * ${scale}),calc(1.75rem * ${scale}))`, lineHeight: 0.9 }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 uppercase font-medium text-center w-[60%]"
+          style={{ color: "#dcdbd5", fontSize: `clamp(calc(2rem * ${scale}),calc(5vw * ${scale}),calc(8rem * ${scale}))`, lineHeight: 0.8, letterSpacing: "-0.03em" }}
         >
           {outroText}
         </h3>
@@ -169,7 +169,7 @@ export default function SlitRevealScroll({
 
       <div ref={fgRef} className="absolute inset-0 z-[2]" style={{ backgroundColor: "#1a0401", clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)" }}>
         <img src="/slit-reveal-scroll/hero.jpg" alt="" className="absolute inset-0 w-full h-full object-cover" draggable={false} />
-        <h1 className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[90%] p-4 uppercase font-medium text-center" style={{ color: "#dcdbd5", fontSize: `clamp(calc(1.5rem * ${scale}),calc(7vw * ${scale}),calc(4rem * ${scale}))`, lineHeight: 0.85 }}>
+        <h1 className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[95%] p-8 uppercase font-medium text-center" style={{ color: "#dcdbd5", fontSize: `clamp(calc(2rem * ${scale}),calc(8vw * ${scale}),calc(14rem * ${scale}))`, lineHeight: 0.8, letterSpacing: "-0.03em" }}>
           Silhouettes against the burning dark
         </h1>
         <div ref={overlayDarkRef} className="absolute inset-0" style={{ backgroundColor: "#1a0401", opacity: 0 }} />
