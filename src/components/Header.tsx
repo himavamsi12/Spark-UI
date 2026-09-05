@@ -90,9 +90,9 @@ export default function Header() {
           href="https://buymeachai.in/himavamsi.kummari"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1.5 bg-accent text-void text-sm font-medium px-3.5 py-2 rounded-pills hover:brightness-110 transition-[filter] shadow-[0_0_20px_-4px_var(--accent)]"
+          className="group flex items-center gap-1.5 bg-accent text-void text-sm font-medium px-3.5 py-2 rounded-pills hover:brightness-110 transition-[filter] shadow-[0_0_20px_-4px_var(--accent)]"
         >
-          <Heart size={15} className="fill-void" />
+          <Heart size={15} className="fill-void group-hover:[animation:sponsorHeartbeat_1.1s_ease-in-out_infinite]" />
           Sponsor
         </a>
       </div>
