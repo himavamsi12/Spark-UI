@@ -349,24 +349,35 @@ export default function AccessGateReveal({
           </svg>
 
           {/* eslint-disable-next-line @next/next/no-img-element */}
+          {/* Fades out as the call to action rises. Pinned to `armed` for the
+              same reason as the label, so it can never be left covering it. */}
           <img
             ref={logoRef}
             src={logo}
             alt=""
             draggable={false}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 object-contain"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 object-contain pointer-events-none"
+            style={{ opacity: armed ? 0 : 1 }}
           />
 
+          {/* Both labels share the centre of the ring. They are
+              pointer-events-none so the click always lands on the button,
+              and the call to action is also pinned open by `armed`, so it
+              cannot be left hidden if the timeline is interrupted. */}
           <span
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 block overflow-hidden uppercase"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 block overflow-hidden uppercase pointer-events-none z-[2]"
             style={{ fontFamily: monoFont, fontSize: `calc(0.9rem * ${scale})` }}
           >
-            <span ref={labelRef} className="block will-change-transform" style={{ transform: "translateY(100%)" }}>
+            <span
+              ref={labelRef}
+              className="block will-change-transform"
+              style={{ transform: armed ? "translateY(0%)" : "translateY(100%)" }}
+            >
               {buttonLabel}
             </span>
           </span>
           <span
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 block overflow-hidden uppercase"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 block overflow-hidden uppercase pointer-events-none z-[1]"
             style={{ fontFamily: monoFont, fontSize: `calc(0.9rem * ${scale})` }}
           >
             <span ref={outroRef} className="block will-change-transform" style={{ transform: "translateY(100%)" }}>
