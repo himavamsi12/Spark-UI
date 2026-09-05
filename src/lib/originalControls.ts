@@ -461,6 +461,53 @@ export const ORIGINALS: OriginalEntry[] = [
       { key: "speed", label: "Speed", type: "slider", default: 100, min: 30, max: 220, step: 10, description: "Auto-play and scroll sensitivity multiplier." },
     ],
   },
+  {
+    key: "grid-shutter-transition",
+    name: "Grid Shutter Transition",
+    category: "Navigation",
+    blurb: "Switching pages closes a grid of blocks across the screen, alternate rows sweeping in from opposite ends, then reopens them the same way onto the next full-bleed page.",
+    features: [
+      "Every row animates at once, but odd rows stagger from the right and even rows from the left, which is what gives the shutter its woven feel",
+      "Blocks are measured off the live container and rebuilt on resize, each a pixel oversized so no seams show between them",
+      "The page swaps at the moment the grid has the screen covered, so the change is never seen",
+    ],
+    controls: [
+      { key: "images", label: "Page Images", type: "imageList", default: ["/grid-shutter/img1.jpg", "/grid-shutter/img2.jpg", "/grid-shutter/img3.jpg"], description: "Background image for each page." },
+      { key: "pages", label: "Page Names", type: "textList", default: ["Genesis", "Cascade", "Orbit"], description: "Title and nav label for each page." },
+      { key: "brand", label: "Brand Name", type: "text", default: "Duskfield", description: "Wordmark in the top left." },
+      { key: "shutterColor", label: "Shutter Color", type: "color", default: "#f2f0e6", description: "Colour of the blocks that close over the page." },
+      { key: "rows", label: "Rows", type: "slider", default: 4, min: 1, max: 12, step: 1, description: "How many rows the shutter grid is divided into." },
+      { key: "columns", label: "Columns", type: "slider", default: 16, min: 2, max: 40, step: 1, description: "Blocks per row. More columns means a finer sweep." },
+      { key: "fontFamily", label: "Display Font", type: "font", default: "var(--font-instrument-serif), serif", description: "Typeface for the page title." },
+      { key: "navFont", label: "Nav Font", type: "font", default: "var(--font-instrument-sans), sans-serif", description: "Typeface used for the nav bar." },
+      { key: "textScale", label: "Text Scale", type: "fontScale", default: 100, min: 50, max: 200, step: 10, description: "Relative size of the title and nav." },
+      { key: "speed", label: "Speed", type: "slider", default: 100, min: 50, max: 200, step: 10, description: "Playback speed of the transition." },
+      { key: "autoPlay", label: "Auto Play", type: "toggle", default: true, description: "Cycle through the pages on their own." },
+    ],
+  },
+  {
+    key: "dissolve-image-reveal",
+    name: "Dissolve Image Reveal",
+    category: "Gallery",
+    blurb: "Scrolling wipes each image away along a band of flickering characters, a solid core of glyphs at the wipe line scattering out into noise at its edges.",
+    features: [
+      "The wipe edge and the character band share one position, so the glyphs always sit exactly on the seam between two images",
+      "Each cell's noise comes from a hash of its own row and column, so the scatter pattern is stable rather than reshuffling every frame",
+      "Cells near the centre of the band scatter least, leaving a solid core that frays into loose characters at the edges",
+    ],
+    controls: [
+      { key: "images", label: "Images", type: "imageList", default: ["/dissolve-reveal/img-1.jpg", "/dissolve-reveal/img-2.jpg", "/dissolve-reveal/img-3.jpg", "/dissolve-reveal/img-4.jpg", "/dissolve-reveal/img-5.jpg"], description: "Images stacked in reveal order." },
+      { key: "dissolveColor", label: "Dissolve Color", type: "color", default: "#ff6426", description: "Colour of the character cells in the band." },
+      { key: "cellSize", label: "Cell Size", type: "slider", default: 16, min: 8, max: 48, step: 2, description: "Size of each character cell in pixels." },
+      { key: "spreadAbove", label: "Spread Above", type: "slider", default: 25, min: 5, max: 60, step: 5, description: "How far the band reaches above the wipe line." },
+      { key: "spreadBelow", label: "Spread Below", type: "slider", default: 25, min: 5, max: 60, step: 5, description: "How far the band reaches below the wipe line." },
+      { key: "scatterIntensity", label: "Scatter", type: "slider", default: 15, min: 0, max: 60, step: 5, description: "How loosely cells scatter away from the band." },
+      { key: "visibilityThreshold", label: "Density", type: "slider", default: 65, min: 20, max: 100, step: 5, description: "How densely the cells fill the band." },
+      { key: "fontFamily", label: "Font", type: "font", default: "var(--font-dm-mono), monospace", description: "Typeface used for the dissolve characters." },
+      { key: "speed", label: "Speed", type: "slider", default: 100, min: 50, max: 200, step: 10, description: "Scroll sensitivity of the reveal." },
+      { key: "autoPlay", label: "Auto Play", type: "toggle", default: false, description: "Off matches the reference, which only moves with the scroll." },
+    ],
+  },
 ];
 
 export function getOriginal(key: string): OriginalEntry | undefined {

@@ -21,6 +21,8 @@ import NameRevealScroll from "./NameRevealScroll";
 import SpotlightZoomScroll from "./SpotlightZoomScroll";
 import SlitRevealScroll from "./SlitRevealScroll";
 import StrokeDrawReveal from "./StrokeDrawReveal";
+import GridShutterTransition from "./GridShutterTransition";
+import DissolveImageReveal from "./DissolveImageReveal";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ORIGINAL_COMPONENTS: Record<string, React.ComponentType<any>> = {
@@ -47,4 +49,6 @@ export const ORIGINAL_COMPONENTS: Record<string, React.ComponentType<any>> = {
   "spotlight-zoom-scroll": SpotlightZoomScroll,
   "slit-reveal-scroll": SlitRevealScroll,
   "stroke-draw-reveal": StrokeDrawReveal,
+  "grid-shutter-transition": GridShutterTransition,
+  "dissolve-image-reveal": DissolveImageReveal,
 };

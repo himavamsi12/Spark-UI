@@ -25,6 +25,8 @@ export const ORIGINAL_SOURCE_FILES: Record<string, string> = {
   "spotlight-zoom-scroll": "SpotlightZoomScroll",
   "slit-reveal-scroll": "SlitRevealScroll",
   "stroke-draw-reveal": "StrokeDrawReveal",
+  "grid-shutter-transition": "GridShutterTransition",
+  "dissolve-image-reveal": "DissolveImageReveal",
 };
 
 export function sourceFileFor(slug: string): string | undefined {
