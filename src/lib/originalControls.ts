@@ -667,6 +667,52 @@ export const ORIGINALS: OriginalEntry[] = [
       { key: "speed", label: "Speed", type: "slider", default: 100, min: 50, max: 200, step: 10, description: "Speed of the rearrangement." },
     ],
   },
+  {
+    key: "ascii-image-reveal",
+    name: "ASCII Image Reveal",
+    category: "Gallery",
+    blurb: "Photographs resolve out of a field of ASCII characters, cells popping in at random and the darkest ones rolling through noise before they settle.",
+    features: [
+      "Each image is sampled to a character grid by luminance, so the type itself carries the picture before the photo appears",
+      "Only cells past a density threshold scramble, so highlights land immediately and shadows churn, which is what gives the reveal its texture",
+      "Cells arrive in shuffled order rather than by row, and the photo fades in only once every cell has settled",
+    ],
+    controls: [
+      { key: "images", label: "Images", type: "imageList", default: ["/ascii-reveal/img1.jpg", "/ascii-reveal/img2.jpg", "/ascii-reveal/img3.jpg", "/ascii-reveal/img4.jpg", "/ascii-reveal/img5.jpg", "/ascii-reveal/img6.jpg", "/ascii-reveal/img7.jpg", "/ascii-reveal/img8.jpg", "/ascii-reveal/img9.jpg", "/ascii-reveal/img10.jpg", "/ascii-reveal/img11.jpg", "/ascii-reveal/img12.jpg", "/ascii-reveal/img13.jpg", "/ascii-reveal/img14.jpg", "/ascii-reveal/img15.jpg"], description: "Photographs to resolve out of the characters." },
+      { key: "characters", label: "Character Ramp", type: "text", default: "........:::=+xX#0369", description: "Light to dark. Everything after the last dot is treated as dark and scrambles." },
+      { key: "background", label: "Background", type: "color", default: "#111111", description: "Colour behind the characters." },
+      { key: "inkColor", label: "Character Color", type: "color", default: "#c8c8c8", description: "Colour of the characters." },
+      { key: "columns", label: "Columns", type: "slider", default: 25, min: 10, max: 60, step: 1, description: "Character columns per image. More means finer detail." },
+      { key: "fontSize", label: "Character Size", type: "slider", default: 14, min: 8, max: 28, step: 1, description: "Size of each character in pixels." },
+      { key: "imageStagger", label: "Image Stagger", type: "slider", default: 100, min: 0, max: 400, step: 20, description: "Delay between images starting, in milliseconds." },
+      { key: "cellAppear", label: "Cell Rate", type: "slider", default: 2, min: 1, max: 20, step: 1, description: "Milliseconds between cells appearing." },
+      { key: "scrambleCount", label: "Scramble Steps", type: "slider", default: 10, min: 1, max: 30, step: 1, description: "How many times a dark cell rerolls before settling." },
+      { key: "scrambleSpeed", label: "Scramble Speed", type: "slider", default: 100, min: 30, max: 300, step: 10, description: "Milliseconds between rerolls." },
+    ],
+  },
+  {
+    key: "physics-tag-hover",
+    name: "Physics Tag Hover",
+    category: "Animations",
+    blurb: "Hovering a service opens the row on an elastic bounce, slides its images up, and drops a handful of pill tags that fall and pile up on real physics.",
+    features: [
+      "Tags are real rigid bodies in a Matter.js world, so they tumble, collide and settle differently every time",
+      "Floor and walls are built from the row's live size, so the pile always lands on the word rather than the container edge",
+      "Tags only start dropping once the row has begun opening, and are cleared on leave so no engine is left running",
+    ],
+    controls: [
+      { key: "background", label: "Background", type: "color", default: "#171717", description: "Colour behind the services." },
+      { key: "nameColor", label: "Name Color", type: "color", default: "#ff3831", description: "Colour of a resting service name." },
+      { key: "activeNameColor", label: "Active Name Color", type: "color", default: "#ffffd9", description: "Colour of the hovered service name." },
+      { key: "tagColor", label: "Tag Color", type: "color", default: "#ffffd9", description: "Border and text colour of the falling tags." },
+      { key: "gravity", label: "Gravity", type: "slider", default: 2, min: 1, max: 6, step: 1, description: "How hard the tags fall." },
+      { key: "collapsedHeight", label: "Closed Height", type: "slider", default: 160, min: 80, max: 260, step: 10, description: "Height of a resting row in pixels." },
+      { key: "expandedHeight", label: "Open Height", type: "slider", default: 400, min: 200, max: 600, step: 20, description: "Height of the hovered row in pixels." },
+      { key: "fontFamily", label: "Name Font", type: "font", default: "var(--font-barlow-condensed), sans-serif", description: "Typeface for the service names." },
+      { key: "tagFont", label: "Tag Font", type: "font", default: "var(--font-instrument-serif), serif", description: "Typeface for the falling tags." },
+      { key: "textScale", label: "Text Scale", type: "fontScale", default: 100, min: 50, max: 200, step: 10, description: "Relative size of the names and tags." },
+    ],
+  },
 ];
 
 export function getOriginal(key: string): OriginalEntry | undefined {

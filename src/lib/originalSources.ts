@@ -34,6 +34,8 @@ export const ORIGINAL_SOURCE_FILES: Record<string, string> = {
   "steelworks-reveal": "SteelworksReveal",
   "scroll-tunnel": "ScrollTunnel",
   "creative-clutter": "CreativeClutter",
+  "ascii-image-reveal": "AsciiImageReveal",
+  "physics-tag-hover": "PhysicsTagHover",
 };
 
 export function sourceFileFor(slug: string): string | undefined {

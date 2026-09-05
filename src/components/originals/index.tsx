@@ -30,6 +30,8 @@ import MagneticCards from "./MagneticCards";
 import SteelworksReveal from "./SteelworksReveal";
 import ScrollTunnel from "./ScrollTunnel";
 import CreativeClutter from "./CreativeClutter";
+import AsciiImageReveal from "./AsciiImageReveal";
+import PhysicsTagHover from "./PhysicsTagHover";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ORIGINAL_COMPONENTS: Record<string, React.ComponentType<any>> = {
@@ -65,4 +67,6 @@ export const ORIGINAL_COMPONENTS: Record<string, React.ComponentType<any>> = {
   "steelworks-reveal": SteelworksReveal,
   "scroll-tunnel": ScrollTunnel,
   "creative-clutter": CreativeClutter,
+  "ascii-image-reveal": AsciiImageReveal,
+  "physics-tag-hover": PhysicsTagHover,
 };
