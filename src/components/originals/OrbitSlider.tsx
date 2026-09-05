@@ -38,15 +38,19 @@ export default function OrbitSlider({
     const titleEl = titleRef.current;
     if (!root || !stage || !orbit || !preview || !previewImg || !titleEl) return;
 
-    orbit.innerHTML = "";
+    // Panels are appended after the (React-owned) preview element rather than
+    // via innerHTML, which would wipe it out from under React. They're tracked
+    // so a re-run of this effect removes only the panels it added.
     const orbitRadius = 400;
     const angleStep = 360 / TOTAL;
+    const panels: HTMLDivElement[] = [];
     for (let i = 0; i < TOTAL; i++) {
       const panel = document.createElement("div");
       panel.className = "absolute w-full h-full overflow-hidden";
       panel.innerHTML = `<img src="/orbit-slider/img${i + 1}.jpg" style="width:100%;height:100%;object-fit:cover;display:block" />`;
       panel.style.transform = `rotateY(${i * angleStep}deg) translateZ(${orbitRadius}px)`;
       orbit.appendChild(panel);
+      panels.push(panel);
     }
 
     const lerp = (from: number, to: number, amount: number) => from + (to - from) * amount;
@@ -106,20 +110,26 @@ export default function OrbitSlider({
       root.removeEventListener("wheel", onWheel);
       root.removeEventListener("mousemove", onMove);
       root.removeEventListener("mouseleave", onLeave);
+      for (const panel of panels) panel.remove();
     };
   }, [autoRotate, speed, tiltMax]);
 
   return (
     <div ref={rootRef} className="relative w-full h-full overflow-hidden bg-[#eaeaea]" style={{ fontFamily, perspective: 2000 }}>
       <div ref={stageRef} className="absolute inset-0" style={{ transformStyle: "preserve-3d" }}>
+        {/* Preview lives inside the ring, not beside it: the ring's own
+            rotateY and this element's counter-rotateY are opposing rotations
+            about the same axis, so they cancel to a true, drift-free 0 rather
+            than approximating it - it only ever inherits the stage's tilt. */}
         <div
           ref={orbitRef}
           className="absolute top-1/2 left-1/2 w-[100px] h-[125px]"
           style={{ transform: "translate(-50%, -50%)", transformStyle: "preserve-3d" }}
-        />
-      </div>
-      <div ref={previewRef} className="absolute top-1/2 left-1/2 w-[250px] h-[325px] overflow-hidden" style={{ transform: "translate(-50%, -50%)" }}>
-        <img ref={previewImgRef} src="/orbit-slider/img1.jpg" className="w-full h-full object-cover" alt="" />
+        >
+          <div ref={previewRef} className="absolute top-1/2 left-1/2 w-[250px] h-[325px] overflow-hidden" style={{ transform: "translate(-50%, -50%)" }}>
+            <img ref={previewImgRef} src="/orbit-slider/img1.jpg" className="w-full h-full object-cover" alt="" />
+          </div>
+        </div>
       </div>
       <p
         ref={titleRef}
