@@ -8,6 +8,8 @@ import ComponentCard from "./ComponentCard";
 import Footer from "./Footer";
 import type { ComponentEntry, SortKey } from "@/lib/types";
 
+const SORT_KEYS: SortKey[] = ["trending", "recent", "copied", "recommended"];
+
 export default function Explorer({ data }: { data: ComponentEntry[] }) {
   const searchParams = useSearchParams();
   const originalsOnly = searchParams.get("view") === "originals";
@@ -16,9 +18,15 @@ export default function Explorer({ data }: { data: ComponentEntry[] }) {
     [data, originalsOnly]
   );
 
+  // Lets the sidebar's Explore shortcuts (Trending, Recently Added, ...) land
+  // here already sorted when they navigate in from another page, instead of
+  // arriving and silently resetting to the default.
+  const initialSort = searchParams.get("sort") as SortKey | null;
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<string | null>(null);
-  const [sort, setSort] = useState<SortKey>("trending");
+  const [sort, setSort] = useState<SortKey>(
+    initialSort && SORT_KEYS.includes(initialSort) ? initialSort : "trending",
+  );
   const [previewType, setPreviewType] = useState<"live" | "still">("live");
 
   const counts = useMemo(() => {

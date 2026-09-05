@@ -47,6 +47,10 @@ export default function Sidebar({
   const pathname = usePathname();
   const activeSlug = pathname?.startsWith("/components/") ? pathname.split("/")[2] : null;
   const onExploreLink = EXPLORE_LINKS.some((l) => pathname === l.href);
+  // The sort buttons only have a live grid to act on from the browse page;
+  // everywhere else (docs, a single component's detail page) they need to
+  // navigate there instead of quietly flipping state nothing on screen reads.
+  const onExplorerPage = pathname === "/components";
 
   // Saved from the heart on any component page. Ordered by the stored list so
   // the most recently saved sits at the bottom, matching the order they were added.
@@ -152,24 +156,42 @@ export default function Sidebar({
               {label}
             </Link>
           ))}
-          {EXPLORE.map(({ key, label, icon: Icon, disabled }) => (
-            <button
-              key={key}
-              disabled={disabled}
-              onClick={() => onSort(key)}
-              title={disabled ? "Sign in to see recommendations" : undefined}
-              className={`flex items-center gap-2 text-sm rounded-pills border px-3 py-2 transition-colors text-left ${
-                sort === key && !onExploreLink
-                  ? "bg-slate border-border text-chalk"
-                  : disabled
-                  ? "border-border text-muted/50 cursor-not-allowed"
-                  : "border-border text-pearl hover:border-pearl/40"
-              }`}
-            >
-              <Icon size={14} />
-              {label}
-            </button>
-          ))}
+          {EXPLORE.map(({ key, label, icon: Icon, disabled }) => {
+            const active = sort === key && !onExploreLink && onExplorerPage;
+            const className = `flex items-center gap-2 text-sm rounded-pills border px-3 py-2 transition-colors text-left ${
+              active
+                ? "bg-slate border-border text-chalk"
+                : disabled
+                ? "border-border text-muted/50 cursor-not-allowed"
+                : "border-border text-pearl hover:border-pearl/40"
+            }`;
+            const content = (
+              <>
+                <Icon size={14} />
+                {label}
+              </>
+            );
+            // Off the browse page there's no grid for onSort to reorder, so
+            // this needs to actually navigate there instead.
+            if (!onExplorerPage && !disabled) {
+              return (
+                <Link key={key} href={`/components?sort=${key}`} className={className}>
+                  {content}
+                </Link>
+              );
+            }
+            return (
+              <button
+                key={key}
+                disabled={disabled}
+                onClick={() => onSort(key)}
+                title={disabled ? "Sign in to see recommendations" : undefined}
+                className={className}
+              >
+                {content}
+              </button>
+            );
+          })}
         </div>
       </div>
 
