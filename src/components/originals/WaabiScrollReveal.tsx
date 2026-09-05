@@ -10,7 +10,11 @@ const DEFAULT_GALLERY = Array.from({ length: 16 }, (_, i) => `/waabi-scroll/img$
 const COLUMN_START_Y = [1000, 500, 500, 1000];
 const COLUMN_END_Y = [-500, -250, -250, -500];
 const COLUMN_OFFSET_X = [0, -1, 1, 0];
-const COLUMN_INSET = 225;
+// The reference pulls the middle columns in by 225px against a column step of
+// 486px at its design width, giving two tight pairs at the edges and a wide
+// middle for the centred text. Held as that ratio, the composition survives at
+// any frame width instead of flattening into four evenly spread columns.
+const COLUMN_INSET_RATIO = 225 / 486;
 
 // The reference's flow, in frames: the hero occupies one and is pinned for 3.5
 // while `.about` sits 2.75 further down, so the gallery starts climbing over
@@ -143,8 +147,10 @@ export default function WaabiScrollReveal({
           parseFloat(getComputedStyle(gallery).paddingRight)
         : root!.clientWidth;
       const count = Math.max(2, columns.length);
-      const spacing = (inner - count * size) / (count - 1);
-      const inset = Math.max(0, Math.min(COLUMN_INSET, spacing - size * 1.15));
+      // Centre-to-centre distance between columns, which is what the inset is
+      // measured against; the cap keeps neighbours from touching.
+      const step = (inner - size) / (count - 1);
+      const inset = Math.max(0, Math.min(COLUMN_INSET_RATIO * step, step - size * 1.15));
 
       columns.forEach((col, i) => {
         const dir = Math.sign(COLUMN_OFFSET_X[i % COLUMN_OFFSET_X.length]);
