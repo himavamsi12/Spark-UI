@@ -32,6 +32,9 @@ import ScrollTunnel from "./ScrollTunnel";
 import CreativeClutter from "./CreativeClutter";
 import AsciiImageReveal from "./AsciiImageReveal";
 import PhysicsTagHover from "./PhysicsTagHover";
+import SmudgeRevealer from "./SmudgeRevealer";
+import FluidCursor from "./FluidCursor";
+import AccessGateReveal from "./AccessGateReveal";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ORIGINAL_COMPONENTS: Record<string, React.ComponentType<any>> = {
@@ -69,4 +72,7 @@ export const ORIGINAL_COMPONENTS: Record<string, React.ComponentType<any>> = {
   "creative-clutter": CreativeClutter,
   "ascii-image-reveal": AsciiImageReveal,
   "physics-tag-hover": PhysicsTagHover,
+  "smudge-revealer": SmudgeRevealer,
+  "fluid-cursor": FluidCursor,
+  "access-gate-reveal": AccessGateReveal,
 };

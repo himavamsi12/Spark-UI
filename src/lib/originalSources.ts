@@ -36,6 +36,9 @@ export const ORIGINAL_SOURCE_FILES: Record<string, string> = {
   "creative-clutter": "CreativeClutter",
   "ascii-image-reveal": "AsciiImageReveal",
   "physics-tag-hover": "PhysicsTagHover",
+  "smudge-revealer": "SmudgeRevealer",
+  "fluid-cursor": "FluidCursor",
+  "access-gate-reveal": "AccessGateReveal",
 };
 
 export function sourceFileFor(slug: string): string | undefined {
