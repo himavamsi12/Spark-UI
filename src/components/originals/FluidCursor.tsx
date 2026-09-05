@@ -47,8 +47,8 @@ export default function FluidCursor({
   lines = ["Fluid System In", "Constant Field", "Of Interaction"],
   brand = "Vortex",
   navItems = ["works", "about", "updates", "start a project"],
-  background = "#0f0f0f",
-  textColor = "#f2f0e6",
+  background = "#ffffff",
+  textColor = "#000000",
   inkColor = "#ffffff",
   simResolution = 256,
   dyeResolution = 1024,
@@ -57,7 +57,8 @@ export default function FluidCursor({
   forceStrength = 85,
   threshold = 100,
   edgeSoftness = 0,
-  fontFamily = "var(--font-instrument-serif), serif",
+  fontFamily = "var(--font-inter), sans-serif",
+  navFont = "var(--font-dm-mono), monospace",
   textScale = 100,
 }: {
   lines?: string[];
@@ -74,6 +75,7 @@ export default function FluidCursor({
   threshold?: number;
   edgeSoftness?: number;
   fontFamily?: string;
+  navFont?: string;
   textScale?: number;
 }) {
   const scale = textScale / 100;
@@ -290,33 +292,52 @@ export default function FluidCursor({
       style={{ background, fontFamily, containerType: "inline-size" }}
     >
       <nav
-        className="absolute top-0 left-0 w-full flex items-start justify-between p-6 z-[2]"
-        style={{ color: textColor, fontSize: `calc(0.8rem * ${scale})` }}
+        className="absolute top-0 left-0 w-full flex items-start justify-between gap-4 p-8 z-[2]"
+        style={{ color: textColor }}
       >
-        <span>{brand}</span>
-        <div className="flex gap-6">
+        <span
+          className="uppercase font-black tracking-[-0.02em]"
+          style={{ fontSize: `calc(1rem * ${scale})` }}
+        >
+          {brand}
+        </span>
+        <div className="flex gap-16">
           {navItems.map((item) => (
-            <span key={item}>{item}</span>
+            <span
+              key={item}
+              className="uppercase font-medium"
+              style={{ fontFamily: navFont, fontSize: `calc(0.85rem * ${scale})` }}
+            >
+              {item}
+            </span>
           ))}
         </div>
       </nav>
 
+      {/* The reference steps the lines left, right, then centre. */}
       <div
-        className="absolute inset-0 flex flex-col justify-center items-center text-center px-6 z-[1] select-none"
+        className="absolute inset-0 flex flex-col justify-center p-8 z-[1] select-none"
         style={{ color: textColor }}
       >
         {lines.map((line, i) => (
           <h1
             key={`${line}-${i}`}
-            className="leading-[1.05] tracking-[-0.02em]"
-            style={{ fontSize: `clamp(calc(1.5rem * ${scale}),calc(7cqw * ${scale}),calc(6rem * ${scale}))` }}
+            className="uppercase font-black leading-[0.9] tracking-[-0.04em]"
+            style={{
+              alignSelf: i % 3 === 1 ? "flex-end" : i % 3 === 2 ? "center" : "flex-start",
+              fontSize: `clamp(calc(1.5rem * ${scale}),calc(10cqw * ${scale}),calc(15rem * ${scale}))`,
+            }}
           >
             {line}
           </h1>
         ))}
       </div>
 
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full z-[3] pointer-events-none" />
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full z-[100] pointer-events-none"
+        style={{ mixBlendMode: "difference" }}
+      />
     </div>
   );
 }
