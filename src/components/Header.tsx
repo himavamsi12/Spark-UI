@@ -77,9 +77,8 @@ export default function Header() {
       </nav>
 
       <div className="flex items-center gap-2">
-        {/* TODO: swap "#" for the real repo URL once it's public. */}
         <a
-          href="#"
+          href="https://github.com/himavamsi12/Spark-UI"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-1.5 border border-border text-pearl text-sm font-medium px-3.5 py-2 rounded-pills hover:border-pearl/40 hover:text-chalk transition-colors"
