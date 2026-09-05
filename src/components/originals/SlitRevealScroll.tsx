@@ -142,11 +142,15 @@ export default function SlitRevealScroll({
   }, [accentColor, speed, autoPlay]);
 
   return (
-    <div ref={rootRef} className="relative w-full h-full overflow-hidden bg-[#dcdbd5]" style={{ fontFamily }}>
+    <div
+      ref={rootRef}
+      className="relative w-full h-full overflow-hidden bg-[#dcdbd5]"
+      style={{ fontFamily, containerType: "inline-size" }}
+    >
       <div className="absolute inset-0 flex z-0">
         <div className="flex-1 flex items-center p-8">
           <div ref={copyLeftRef} className="flex flex-col gap-2 w-1/2 will-change-transform">
-            <h3 className="uppercase font-medium" style={{ color: accentColor, fontSize: `clamp(calc(2rem * ${scale}),calc(5vw * ${scale}),calc(8rem * ${scale}))`, lineHeight: 0.8, letterSpacing: "-0.03em" }}>
+            <h3 className="uppercase font-medium" style={{ color: accentColor, fontSize: `clamp(calc(2rem * ${scale}),calc(5cqw * ${scale}),calc(8rem * ${scale}))`, lineHeight: 0.8, letterSpacing: "-0.03em" }}>
               Motion
             </h3>
             <p className="uppercase font-medium" style={{ color: "#1a0401", fontSize: `calc(0.85rem * ${scale})`, lineHeight: 1.1 }}>
@@ -156,7 +160,7 @@ export default function SlitRevealScroll({
         </div>
         <div className="flex-1 flex items-center justify-end p-8">
           <div ref={copyRightRef} className="flex flex-col gap-2 w-1/2 will-change-transform">
-            <h3 className="uppercase font-medium" style={{ color: accentColor, fontSize: `clamp(calc(2rem * ${scale}),calc(5vw * ${scale}),calc(8rem * ${scale}))`, lineHeight: 0.8, letterSpacing: "-0.03em" }}>
+            <h3 className="uppercase font-medium" style={{ color: accentColor, fontSize: `clamp(calc(2rem * ${scale}),calc(5cqw * ${scale}),calc(8rem * ${scale}))`, lineHeight: 0.8, letterSpacing: "-0.03em" }}>
               Silence
             </h3>
             <p className="uppercase font-medium" style={{ color: "#1a0401", fontSize: `calc(0.85rem * ${scale})`, lineHeight: 1.1 }}>
@@ -176,7 +180,7 @@ export default function SlitRevealScroll({
         <h3
           ref={outroHeaderRef}
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 uppercase font-medium text-center w-[60%]"
-          style={{ color: "#dcdbd5", fontSize: `clamp(calc(2rem * ${scale}),calc(5vw * ${scale}),calc(8rem * ${scale}))`, lineHeight: 0.8, letterSpacing: "-0.03em" }}
+          style={{ color: "#dcdbd5", fontSize: `clamp(calc(2rem * ${scale}),calc(5cqw * ${scale}),calc(8rem * ${scale}))`, lineHeight: 0.8, letterSpacing: "-0.03em" }}
         >
           {outroText}
         </h3>
@@ -184,7 +188,7 @@ export default function SlitRevealScroll({
 
       <div ref={fgRef} className="absolute inset-0 z-[2]" style={{ backgroundColor: "#1a0401", clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)" }}>
         <img src="/slit-reveal-scroll/hero.jpg" alt="" className="absolute inset-0 w-full h-full object-cover" draggable={false} />
-        <h1 className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[95%] p-8 uppercase font-medium text-center" style={{ color: "#dcdbd5", fontSize: `clamp(calc(2rem * ${scale}),calc(8vw * ${scale}),calc(14rem * ${scale}))`, lineHeight: 0.8, letterSpacing: "-0.03em" }}>
+        <h1 className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[95%] p-8 uppercase font-medium text-center" style={{ color: "#dcdbd5", fontSize: `clamp(calc(2rem * ${scale}),calc(8cqw * ${scale}),calc(14rem * ${scale}))`, lineHeight: 0.8, letterSpacing: "-0.03em" }}>
           Silhouettes against the burning dark
         </h1>
         <div ref={overlayDarkRef} className="absolute inset-0" style={{ backgroundColor: "#1a0401", opacity: 0 }} />
