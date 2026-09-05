@@ -9,7 +9,8 @@ const DEFAULT_GALLERY = Array.from({ length: 16 }, (_, i) => `/waabi-scroll/img$
 // tweened up to its own end point; the drift is that whole span, not 0 -> end.
 const COLUMN_START_Y = [1000, 500, 500, 1000];
 const COLUMN_END_Y = [-500, -250, -250, -500];
-const COLUMN_OFFSET_X = [0, -225, 225, 0];
+const COLUMN_OFFSET_X = [0, -1, 1, 0];
+const COLUMN_INSET = 225;
 
 // The reference's flow, in frames: the hero occupies one and is pinned for 3.5
 // while `.about` sits 2.75 further down, so the gallery starts climbing over
@@ -130,9 +131,24 @@ export default function WaabiScrollReveal({
         tile.style.opacity = narrow ? "0.25" : "1";
         tile.style.filter = narrow ? "saturate(0)" : "none";
       }
+
+      // The reference's 225px inset assumes the column spacing of a ~1700px
+      // window. Below that the columns sit closer together and the inset walks
+      // them into each other, so cap it at whatever still leaves a gap. At the
+      // reference's own width this is the full 225 and nothing changes.
+      const gallery = track!.querySelector<HTMLDivElement>("[data-gallery]");
+      const inner = gallery
+        ? gallery.clientWidth -
+          parseFloat(getComputedStyle(gallery).paddingLeft) -
+          parseFloat(getComputedStyle(gallery).paddingRight)
+        : root!.clientWidth;
+      const count = Math.max(2, columns.length);
+      const spacing = (inner - count * size) / (count - 1);
+      const inset = Math.max(0, Math.min(COLUMN_INSET, spacing - size * 1.15));
+
       columns.forEach((col, i) => {
-        const middle = i % 4 === 1 || i % 4 === 2;
-        gsap.set(col, { x: narrow && middle ? 0 : COLUMN_OFFSET_X[i % COLUMN_OFFSET_X.length] });
+        const dir = Math.sign(COLUMN_OFFSET_X[i % COLUMN_OFFSET_X.length]);
+        gsap.set(col, { x: narrow ? 0 : dir * inset });
       });
       heroPin!.style.zIndex = narrow ? "2" : "0";
     }
@@ -294,6 +310,7 @@ export default function WaabiScrollReveal({
 
         <div data-about className="relative w-full flex items-center justify-center text-center" style={{ height: "var(--frame-h, 100%)" }}>
           <div
+            data-gallery
             className="w-full h-full flex justify-between items-center"
             style={{ padding: "clamp(1.5rem, 4cqw, 4rem)" }}
           >
