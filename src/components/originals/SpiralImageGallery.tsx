@@ -12,9 +12,17 @@ const TRACK_FRAMES = HERO_FRAMES + 1;
 
 // The reference's hero is 1.5x a roughly 16:9 window, so its camera frames the
 // ribbon at about this aspect. three's field of view is vertical, so a wider
-// frame than this only reveals more empty world and shrinks the ribbon; keeping
-// the horizontal extent fixed instead frames it as intended at any shape.
+// frame than this only reveals more empty world and shrinks the ribbon.
+// Matching the reference's *horizontal* field of view instead keeps the ribbon
+// framed the same at any shape. This adjusts the lens, not the camera
+// position: moving the camera in would frame it correctly but foreshorten the
+// turns far harder than the reference does, splaying the spiral open.
 const DESIGN_ASPECT = 1.2;
+const DESIGN_FOV = 75;
+const DEG = Math.PI / 180;
+const HALF_H_FOV = Math.atan(Math.tan((DESIGN_FOV / 2) * DEG) * DESIGN_ASPECT);
+const fovForAspect = (aspect: number) =>
+  (2 * Math.atan(Math.tan(HALF_H_FOV) / aspect)) / DEG;
 
 // Lenis' default lerp; the camera keeps its own easing on top of this.
 const smoothing = (dt: number) => 1 - Math.pow(0.9, dt * 60);
@@ -125,19 +133,16 @@ export default function SpiralImageGallery({
       const angleStep = (Math.PI * 2) / CONFIG.tilesPerRevolution;
 
       const heroHeight = () => root!.clientHeight * HERO_FRAMES;
-      const cameraDistance = () => {
-        const aspect = root!.clientWidth / heroHeight();
-        return gsap.utils.clamp(6, 24, CONFIG.cameraZ * (DESIGN_ASPECT / aspect));
-      };
 
       const scene = new THREE.Scene();
+      const aspectNow = () => root!.clientWidth / heroHeight();
       const camera = new THREE.PerspectiveCamera(
-        75,
-        root!.clientWidth / heroHeight(),
+        fovForAspect(aspectNow()),
+        aspectNow(),
         0.1,
         1000,
       );
-      camera.position.z = cameraDistance();
+      camera.position.z = CONFIG.cameraZ;
 
       const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -253,8 +258,6 @@ export default function SpiralImageGallery({
         if (next === target) return;
         e.preventDefault();
         userDriven = true;
-        // Scroll velocity spins the ribbon on top of its idle drift.
-        spinVelocity = (e.deltaY / 16) * CONFIG.scrollRotationMultiplier;
         target = next;
       }
       root!.addEventListener("wheel", onWheel, { passive: false });
@@ -288,8 +291,17 @@ export default function SpiralImageGallery({
             dir = 1;
           }
         }
+        const previous = scroll;
         scroll += (target - scroll) * smoothing(dt);
         track!.style.transform = `translateY(${-scroll}px)`;
+
+        // The reference spins the ribbon by Lenis' own per-frame velocity, so
+        // take it from how far the smoothed scroll actually moved this frame
+        // rather than from the raw wheel delta.
+        const velocity = scroll - previous;
+        if (Math.abs(velocity) > 0.01) {
+          spinVelocity = velocity * CONFIG.scrollRotationMultiplier;
+        }
 
         const progress = Math.min(
           scroll / (root!.clientHeight * CONFIG.scrollMultiplier),
@@ -320,8 +332,10 @@ export default function SpiralImageGallery({
       const ro = new ResizeObserver(() => {
         const w = root!.clientWidth;
         root!.style.setProperty("--frame-h", `${root!.clientHeight}px`);
-        camera.aspect = w / heroHeight();
-        camera.position.z = cameraDistance();
+        camera.aspect = aspectNow();
+        camera.fov = fovForAspect(camera.aspect);
+        // The reference's one responsive step: pull back on a narrow screen.
+        camera.position.z = w < 1000 ? 15 : CONFIG.cameraZ;
         camera.updateProjectionMatrix();
         renderer.setSize(w, heroHeight(), false);
       });
