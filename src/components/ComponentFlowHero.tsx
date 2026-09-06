@@ -84,33 +84,35 @@ export default function ComponentFlowHero({ className }: { className?: string })
       // Skip both the fall and the drift; land everything where it belongs.
       gsap.set(fallEls, { y: 0, x: 0, rotate: 0, opacity: 1 });
     } else {
-      // Each card drops in like a released sheet of paper: its own small
-      // sideways drift and tumble on top of a shared fall, landing out of
-      // sync with its neighbours rather than as one rigid block. The random
-      // starting pose is set up front so the staggered tween below has a
-      // stable value to read from at each card's own start time.
+      // Cards don't fall straight down in place: they start piled together
+      // near the front card's own slot, tumbling, and each one's sideways
+      // distance back to its own resting spot closes over the fall - which
+      // is what makes the deck visibly fan open as it drops, rather than
+      // just appearing.
       //
-      // The start offset is computed from each card's OWN resting top (read
-      // off its parent .cfh-card, which never moves) rather than a flat
-      // range, so every card - regardless of its slight per-index height
-      // difference - reliably starts just above this section's own top edge
-      // and falls the full visible distance down to where it lands, instead
-      // of some landing close enough to start already in view.
-      for (const el of fallEls) {
+      // The vertical start offset is computed from each card's OWN resting
+      // top (read off its parent .cfh-card, which never moves) rather than a
+      // flat range, so every card - regardless of its slight per-index
+      // height difference - reliably starts just above this section's own
+      // top edge and falls the full visible distance down to where it lands.
+      const ANCHOR_INDEX = 0;
+      fallEls.forEach((el, i) => {
         const restingTop = parseFloat(el.parentElement!.style.top || "0");
+        const posInSet = i % COVERS.length;
+        const clusterX = (ANCHOR_INDEX - posInSet) * STEP_X;
         gsap.set(el, {
           opacity: 0,
           y: -(restingTop + gsap.utils.random(20, 60)),
-          x: gsap.utils.random(-18, 18),
-          rotate: gsap.utils.random(-16, 16),
+          x: clusterX + gsap.utils.random(-14, 14),
+          rotate: gsap.utils.random(-70, 70),
         });
-      }
+      });
       gsap.to(fallEls, {
         y: 0,
         x: 0,
         rotate: 0,
         opacity: 1,
-        duration: () => gsap.utils.random(1, 1.5),
+        duration: () => gsap.utils.random(1.1, 1.6),
         // A little jitter on top of the shared left-to-right stagger, so the
         // cascade reads as loosely dropped rather than metronomic.
         delay: () => gsap.utils.random(0, 0.12),
