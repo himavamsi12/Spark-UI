@@ -11,6 +11,7 @@ import {
   FileCode2,
   type LucideIcon,
 } from "lucide-react";
+import AeroShards from "./AeroShards";
 import ComponentFlowHero from "./ComponentFlowHero";
 import CustomiseDemo from "./CustomiseDemo";
 import Footer from "./Footer";
@@ -211,6 +212,27 @@ export default function Landing({
       {/* CTA ------------------------------------------------------------- */}
       <section className="px-6 pb-20">
         <div className="max-w-5xl mx-auto relative overflow-hidden rounded-cards border border-border bg-card px-6 py-12 text-center">
+          <div className="absolute inset-0">
+            <AeroShards
+              backgroundColor="#0f0d11"
+              shardColor="#ff8a3d"
+              accentColor="#e8730a"
+              placement="full"
+              flow="stream"
+              material="pearl"
+              detail="balanced"
+              density={1.5}
+              shardSize={1.1}
+              glow={1}
+              bloom={0.5}
+              chromaticAberration={0.0075}
+              interaction="repel"
+              interactionRadius={1.5}
+              interactionStrength={0.5}
+              holdToGather
+              onError={() => {}}
+            />
+          </div>
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-[radial-gradient(ellipse_at_bottom,var(--accent)_0%,transparent_70%)] opacity-[0.16]" />
           <div className="relative">
             <h2 className="font-display text-2xl sm:text-3xl font-semibold tracking-tight text-chalk text-balance">
