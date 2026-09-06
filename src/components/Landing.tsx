@@ -13,7 +13,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import Aurora from "./Aurora";
-import SideRays from "./SideRays";
 import ComponentFlowHero from "./ComponentFlowHero";
 import CustomiseDemo from "./CustomiseDemo";
 import Footer from "./Footer";
@@ -227,19 +226,7 @@ export default function Landing({
             }}
           />
           <div className="absolute inset-0">
-            <SideRays
-              speed={2.5}
-              rayColor1="#ffffff"
-              rayColor2="#ff8a3d"
-              intensity={2.8}
-              spread={2.6}
-              origin="top-right"
-              tilt={0}
-              saturation={1.5}
-              blend={0.75}
-              falloff={1.35}
-              opacity={1.0}
-            />
+            <Aurora colorStops={["#e8730a", "#ff8a3d", "#7c2d12"]} blend={0.5} amplitude={1.0} speed={0.5} />
           </div>
           {/* Vignette so the rays read as a light source falling across the
               card rather than an isolated streak in one corner. */}
