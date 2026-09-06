@@ -54,8 +54,12 @@ const SETS = 3;
  * Empty strip above the deck so a lifted card isn't clipped by the container's
  * overflow. The box grows upward and the cards are pushed down by the same
  * amount, so the deck and everything around it stay exactly where they were.
+ * Has to clear FALL_DISTANCE (below) plus the diagonal's own Y drift, or the
+ * on-load fall-in clips against the container's top edge.
  */
-const HEADROOM = 90;
+const HEADROOM = 210;
+// How far above its resting spot each card starts before falling into place.
+const FALL_DISTANCE = 190;
 
 const SET_SPAN_X = COVERS.length * STEP_X;
 const SET_SPAN_Y = COVERS.length * STEP_Y;
@@ -87,8 +91,21 @@ export default function ComponentFlowHero({ className }: { className?: string })
     const liftEls = liftRefs.current.filter((el): el is HTMLDivElement => !!el);
     if (!container || !track || !fallEls.length) return;
 
-    // Cards sit at rest from the start; only the drift ever moves them.
-    gsap.set(fallEls, { y: 0, x: 0, rotate: 0, opacity: 1 });
+    // Cards fall into place one by one on load, left to right, then sit at
+    // rest - only the drift and the hover wave ever move them after that.
+    const reducedMotionForFall = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotionForFall) {
+      gsap.set(fallEls, { y: 0, x: 0, rotate: 0, opacity: 1 });
+    } else {
+      gsap.set(fallEls, { y: -FALL_DISTANCE, x: 0, rotate: 0, opacity: 0 });
+      gsap.to(fallEls, {
+        y: 0,
+        opacity: 1,
+        duration: 0.7,
+        ease: "power3.out",
+        stagger: 0.045,
+      });
+    }
 
     // Lifting one card also nudges its neighbours, tapering off with distance,
     // so the row reads as one curve responding to the cursor rather than a
@@ -101,18 +118,68 @@ export default function ComponentFlowHero({ className }: { className?: string })
           scale: gsap.quickTo(el, "scale", { duration: 0.5, ease: "power3.out" }),
         }));
 
-    const onMove = (e: PointerEvent) => {
-      if (e.pointerType === "touch") return;
+    // proxy.p is an unbounded "how many set-widths along the diagonal" value.
+    // Only its fractional part is ever rendered, so the drift never runs out
+    // of the pre-rendered sets.
+    const proxy = { p: 0 };
+    const render = () => {
+      const wrapped = ((proxy.p % 1) + 1) % 1;
+      gsap.set(track, { x: -wrapped * SET_SPAN_X, y: wrapped * SET_SPAN_Y });
+    };
+    render();
+
+    let hoverPaused = false;
+
+    const ticker = (_time: number, deltaMs: number) => {
+      if (hoverPaused) return;
+      proxy.p += deltaMs / 1000 / 15; // ~70px/s along the diagonal, same pace as before
+      render();
+    };
+    if (!reducedMotion) gsap.ticker.add(ticker);
+
+    // Cached so the wave-hover below never calls getBoundingClientRect -
+    // reading layout on every pointermove while the deck's transform is
+    // changing every frame forces a synchronous reflow each time, which is
+    // what made the drift look jerky. Only the container's own box (not the
+    // constantly-moving cards) needs measuring, and it only changes on resize.
+    let containerLeft = container.getBoundingClientRect().left;
+    const onResize = () => {
+      containerLeft = container.getBoundingClientRect().left;
+    };
+    window.addEventListener("resize", onResize);
+
+    // rAF-gated: pointermove can fire far more often than the screen repaints
+    // (especially on trackpads/high-poll mice), so without this the same
+    // per-card math below could run hundreds of times a second for no
+    // visible benefit.
+    let pendingClientX: number | null = null;
+    let rafId: number | null = null;
+    const applyWave = () => {
+      rafId = null;
+      if (pendingClientX === null) return;
+      const clientX = pendingClientX;
+      const wrapped = ((proxy.p % 1) + 1) % 1;
+      const trackX = -wrapped * SET_SPAN_X;
       liftEls.forEach((el, i) => {
-        const rect = el.getBoundingClientRect();
-        const dist = Math.abs(e.clientX - (rect.left + rect.width / 2));
+        const cardCenterX = containerLeft + trackX + i * STEP_X + CARD_W / 2;
+        const dist = Math.abs(clientX - cardCenterX);
         const angle = (Math.min(dist, WAVE_RADIUS) / WAVE_RADIUS) * (Math.PI / 2);
         const falloff = Math.pow(Math.cos(angle), WAVE_POWER);
         quickTos[i].y(LIFT_Y * falloff);
         quickTos[i].scale(1 + LIFT_SCALE * falloff);
       });
     };
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType === "touch") return;
+      pendingClientX = e.clientX;
+      if (rafId === null) rafId = requestAnimationFrame(applyWave);
+    };
     const onLeave = () => {
+      pendingClientX = null;
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
       quickTos.forEach(({ y, scale }) => {
         y(0);
         scale(1);
@@ -123,31 +190,6 @@ export default function ComponentFlowHero({ className }: { className?: string })
       container.addEventListener("pointermove", onMove);
       container.addEventListener("pointerleave", onLeave);
     }
-
-    // proxy.p is an unbounded "how many set-widths along the diagonal" value.
-    // Only its fractional part is ever rendered, so the deck can be dragged
-    // as far as you like in either direction without running out of the
-    // pre-rendered sets - the drift and the drag both just add to the same
-    // number.
-    const proxy = { p: 0 };
-    const render = () => {
-      const wrapped = ((proxy.p % 1) + 1) % 1;
-      gsap.set(track, { x: -wrapped * SET_SPAN_X, y: wrapped * SET_SPAN_Y });
-    };
-    render();
-
-    let hoverPaused = false;
-    let dragging = false;
-    let dragMoved = false;
-    let dragStartX = 0;
-    let dragStartP = 0;
-
-    const ticker = (_time: number, deltaMs: number) => {
-      if (hoverPaused || dragging) return;
-      proxy.p += deltaMs / 1000 / 15; // ~70px/s along the diagonal, same pace as before
-      render();
-    };
-    if (!reducedMotion) gsap.ticker.add(ticker);
 
     // Hovering a card holds the deck still. Done with plain listeners rather
     // than React state so the moving deck sliding under the cursor never
@@ -164,38 +206,9 @@ export default function ComponentFlowHero({ className }: { className?: string })
     track.addEventListener("mouseover", onOver);
     track.addEventListener("mouseout", onOut);
 
-    // Drag-to-scrub: grab the deck and pull it through by hand, like flipping
-    // a stack of covers. A plain click (no real movement) falls through to
-    // the click handler below instead, so tapping a cover still navigates.
-    const onPointerDown = (e: PointerEvent) => {
-      if (!(e.target as HTMLElement).closest(".cfh-card")) return;
-      dragging = true;
-      dragMoved = false;
-      dragStartX = e.clientX;
-      dragStartP = proxy.p;
-      container.classList.add("cfh-dragging");
-    };
-    const onPointerMove = (e: PointerEvent) => {
-      if (!dragging) return;
-      const dx = e.clientX - dragStartX;
-      if (Math.abs(dx) > 4) dragMoved = true;
-      proxy.p = dragStartP - dx / SET_SPAN_X;
-      render();
-    };
-    const endDrag = () => {
-      if (!dragging) return;
-      dragging = false;
-      container.classList.remove("cfh-dragging");
-    };
-    container.addEventListener("pointerdown", onPointerDown);
-    window.addEventListener("pointermove", onPointerMove);
-    window.addEventListener("pointerup", endDrag);
-    window.addEventListener("pointercancel", endDrag);
-
-    // Click-through: a cover that wasn't just dragged navigates to the real
-    // component page it's standing in for.
+    // Click-through: a cover navigates to the real component page it's
+    // standing in for.
     const onClick = (e: MouseEvent) => {
-      if (dragMoved) return;
       const card = (e.target as HTMLElement).closest(".cfh-card") as HTMLElement | null;
       if (!card) return;
       const idx = Number(card.dataset.idx);
@@ -209,11 +222,9 @@ export default function ComponentFlowHero({ className }: { className?: string })
       track.removeEventListener("mouseout", onOut);
       container.removeEventListener("pointermove", onMove);
       container.removeEventListener("pointerleave", onLeave);
-      container.removeEventListener("pointerdown", onPointerDown);
       container.removeEventListener("click", onClick);
-      window.removeEventListener("pointermove", onPointerMove);
-      window.removeEventListener("pointerup", endDrag);
-      window.removeEventListener("pointercancel", endDrag);
+      window.removeEventListener("resize", onResize);
+      if (rafId !== null) cancelAnimationFrame(rafId);
       gsap.ticker.remove(ticker);
       gsap.killTweensOf(fallEls);
       gsap.killTweensOf(liftEls);
@@ -249,8 +260,7 @@ export default function ComponentFlowHero({ className }: { className?: string })
            translateZ also pushes the card outward from the perspective origin,
            which reads as a sideways slide rather than a clean lift. */
         .cfh-card:hover { transform: translateZ(12px) ${BASE_TILT}; }
-        .cfh-card { cursor: grab; touch-action: pan-y; }
-        .cfh-dragging .cfh-card { cursor: grabbing; }
+        .cfh-card { cursor: pointer; }
 
         .cfh-lift {
           will-change: transform;

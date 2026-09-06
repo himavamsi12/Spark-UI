@@ -216,7 +216,7 @@ export default function Landing({
           className="max-w-5xl mx-auto relative overflow-hidden rounded-cards border border-border bg-card px-6 py-12 text-center shadow-[inset_0_1px_0_0_rgba(255,255,255,0.07)]"
         >
           <div className="absolute inset-0 opacity-40">
-            <Aurora colorStops={["#e8730a", "#ff8a3d", "#7c2d12"]} blend={0.4} amplitude={0.8} speed={0.5} />
+            <Aurora colorStops={["#e8730a", "#ff8a3d", "#7c2d12"]} blend={0.4} amplitude={0.8} speed={1.8} />
           </div>
           {/* Vignette so the rays read as a light source falling across the
               card rather than an isolated streak in one corner. */}
