@@ -213,18 +213,10 @@ export default function Landing({
       </section>
 
       {/* CTA ------------------------------------------------------------- */}
-      <section className="px-6 pt-10 pb-20">
+      <section className="relative px-6 pt-10 pb-20">
         <div
           className="max-w-5xl mx-auto relative overflow-hidden rounded-cards border border-border bg-card px-6 py-12 text-center shadow-[inset_0_1px_0_0_rgba(255,255,255,0.07)]"
         >
-          {/* Fine dot grid, the texture underneath the light rather than a flat fill. */}
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.05]"
-            style={{
-              backgroundImage: "radial-gradient(circle, var(--color-chalk) 1px, transparent 1px)",
-              backgroundSize: "22px 22px",
-            }}
-          />
           <div className="absolute inset-0">
             <Aurora colorStops={["#e8730a", "#ff8a3d", "#7c2d12"]} blend={0.5} amplitude={1.0} speed={0.5} />
           </div>
@@ -251,6 +243,7 @@ export default function Landing({
             </div>
           </div>
         </div>
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-[radial-gradient(ellipse_at_bottom,var(--accent)_0%,transparent_70%)] opacity-[0.16]" />
       </section>
 
       <Footer />
