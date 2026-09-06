@@ -237,10 +237,10 @@ export default function Landing({
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-[radial-gradient(ellipse_at_bottom,var(--accent)_0%,transparent_70%)] opacity-[0.16]" />
           <div className="relative">
             <h2 className="font-display text-2xl sm:text-3xl font-semibold tracking-tight text-chalk text-balance">
-              Find the one that fits, take it home
+              Free to use, not free to make
             </h2>
             <p className="mt-2.5 text-sm text-pearl max-w-md mx-auto text-balance">
-              No sign-up, no attribution, nothing to install before you start looking.
+              No ads, no premium tier, no paywall coming later. If this saved you time, a chai keeps it going.
             </p>
             <div className="mt-6 flex items-center justify-center">
               <a
