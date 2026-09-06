@@ -37,10 +37,8 @@ const SETS = 3;
  * Empty strip above the deck so a lifted card isn't clipped by the container's
  * overflow. The box grows upward and the cards are pushed down by the same
  * amount, so the deck and everything around it stay exactly where they were.
- * Sized generously (well past what hovering needs) so the entrance fall below
- * has real, visible room to drop through at the top of this section.
  */
-const HEADROOM = 260;
+const HEADROOM = 90;
 
 const SET_SPAN_X = COVERS.length * STEP_X;
 const SET_SPAN_Y = COVERS.length * STEP_Y;
@@ -56,16 +54,16 @@ export default function ComponentFlowHero({ className }: { className?: string })
     const fallEls = fallRefs.current.filter((el): el is HTMLDivElement => !!el);
     if (!track || !fallEls.length) return;
 
-    // The drift tween is built up front, paused, and only played once every
-    // card has landed - "after falling move carousel" - rather than racing it
-    // against the fall.
+    // Cards sit at rest from the start; only the drift ever moves them.
+    gsap.set(fallEls, { y: 0, x: 0, rotate: 0, opacity: 1 });
+
     const proxy = { p: 0 };
     const driftTween = gsap.to(proxy, {
       p: 1,
       duration: 15, // ~70px/s along the diagonal, visible drift but still calm
       ease: "none",
       repeat: -1,
-      paused: true,
+      paused: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
       onUpdate: () => {
         // Travel exactly one set along the diagonal, then start over.
         gsap.set(track, {
@@ -75,64 +73,13 @@ export default function ComponentFlowHero({ className }: { className?: string })
       },
     });
 
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    // Guards hover from starting the drift early if the cursor reaches a card
-    // while the fall is still playing out.
-    let driftStarted = reduceMotion;
-
-    if (reduceMotion) {
-      // Skip both the fall and the drift; land everything where it belongs.
-      gsap.set(fallEls, { y: 0, x: 0, rotate: 0, opacity: 1 });
-    } else {
-      // Cards don't fall straight down in place: they start piled together
-      // near the front card's own slot, tumbling, and each one's sideways
-      // distance back to its own resting spot closes over the fall - which
-      // is what makes the deck visibly fan open as it drops, rather than
-      // just appearing.
-      //
-      // The vertical start offset is computed from each card's OWN resting
-      // top (read off its parent .cfh-card, which never moves) rather than a
-      // flat range, so every card - regardless of its slight per-index
-      // height difference - reliably starts just above this section's own
-      // top edge and falls the full visible distance down to where it lands.
-      const ANCHOR_INDEX = 0;
-      fallEls.forEach((el, i) => {
-        const restingTop = parseFloat(el.parentElement!.style.top || "0");
-        const posInSet = i % COVERS.length;
-        const clusterX = (ANCHOR_INDEX - posInSet) * STEP_X;
-        gsap.set(el, {
-          opacity: 0,
-          y: -(restingTop + gsap.utils.random(20, 60)),
-          x: clusterX + gsap.utils.random(-14, 14),
-          rotate: gsap.utils.random(-70, 70),
-        });
-      });
-      gsap.to(fallEls, {
-        y: 0,
-        x: 0,
-        rotate: 0,
-        opacity: 1,
-        duration: () => gsap.utils.random(1.1, 1.6),
-        // A little jitter on top of the shared left-to-right stagger, so the
-        // cascade reads as loosely dropped rather than metronomic.
-        delay: () => gsap.utils.random(0, 0.12),
-        ease: "power3.out",
-        stagger: { each: 0.045, from: "start" },
-        onComplete: () => {
-          driftStarted = true;
-          driftTween.play();
-        },
-      });
-    }
-
     // Hovering a card holds the deck still. Done with plain listeners rather
     // than React state so the moving deck sliding under the cursor never
     // triggers a re-render mid-lift.
     const onOver = (e: MouseEvent) => {
-      if (driftStarted && (e.target as HTMLElement).closest(".cfh-card")) driftTween.pause();
+      if ((e.target as HTMLElement).closest(".cfh-card")) driftTween.pause();
     };
     const onOut = (e: MouseEvent) => {
-      if (!driftStarted) return;
       const to = e.relatedTarget as HTMLElement | null;
       // Sliding straight onto a neighbouring card should stay paused.
       if (to?.closest?.(".cfh-card")) return;

@@ -59,9 +59,7 @@ export default function Landing({
     <main className="flex-1 min-h-0 overflow-y-auto no-scrollbar">
       {/* Hero ------------------------------------------------------------ */}
       <section className="relative px-6 pt-16 pb-32 text-center overflow-hidden">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-[420px] opacity-60">
-          <Aurora colorStops={["#e8730a", "#ff8a3d", "#7c2d12"]} blend={0.5} amplitude={1.0} speed={0.5} />
-        </div>
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(ellipse_at_top,var(--accent)_0%,transparent_62%)] opacity-[0.13]" />
 
         <div className="relative max-w-3xl mx-auto">
           <span className="inline-flex items-center gap-1.5 rounded-pills border border-border bg-panel px-3 py-1 text-xs text-pearl mb-6">
@@ -213,16 +211,16 @@ export default function Landing({
       </section>
 
       {/* CTA ------------------------------------------------------------- */}
-      <section className="relative px-6 pt-10 pb-20">
+      <section className="px-6 pt-10 pb-20">
         <div
           className="max-w-5xl mx-auto relative overflow-hidden rounded-cards border border-border bg-card px-6 py-12 text-center shadow-[inset_0_1px_0_0_rgba(255,255,255,0.07)]"
         >
-          <div className="absolute inset-0">
-            <Aurora colorStops={["#e8730a", "#ff8a3d", "#7c2d12"]} blend={0.5} amplitude={1.0} speed={0.5} />
+          <div className="absolute inset-0 opacity-40">
+            <Aurora colorStops={["#e8730a", "#ff8a3d", "#7c2d12"]} blend={0.4} amplitude={0.8} speed={0.5} />
           </div>
           {/* Vignette so the rays read as a light source falling across the
               card rather than an isolated streak in one corner. */}
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,var(--color-void)_92%)] opacity-70" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_25%,var(--color-void)_90%)] opacity-80" />
           <div className="relative">
             <h2 className="font-display text-2xl sm:text-3xl font-semibold tracking-tight text-chalk text-balance">
               Free to use, not free to make
@@ -243,7 +241,6 @@ export default function Landing({
             </div>
           </div>
         </div>
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-[radial-gradient(ellipse_at_bottom,var(--accent)_0%,transparent_70%)] opacity-[0.16]" />
       </section>
 
       <Footer />
