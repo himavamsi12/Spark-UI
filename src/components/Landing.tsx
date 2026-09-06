@@ -3,6 +3,7 @@
 import Link from "next/link";
 import {
   ArrowRight,
+  Heart,
   Plug,
   Sparkles,
   SlidersHorizontal,
@@ -210,7 +211,7 @@ export default function Landing({
       </section>
 
       {/* CTA ------------------------------------------------------------- */}
-      <section className="px-6 pb-20">
+      <section className="px-6 pt-10 pb-20">
         <div className="max-w-5xl mx-auto relative overflow-hidden rounded-cards border border-border bg-card px-6 py-12 text-center">
           <div className="absolute inset-0">
             <AeroShards
@@ -241,13 +242,17 @@ export default function Landing({
             <p className="mt-2.5 text-sm text-pearl max-w-md mx-auto text-balance">
               No sign-up, no attribution, nothing to install before you start looking.
             </p>
-            <Link
-              href="/components"
-              className="group mt-6 inline-flex items-center gap-2 bg-chalk text-void text-sm font-medium px-5 py-2.5 rounded-pills hover:bg-pearl transition-colors"
-            >
-              Browse components
-              <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />
-            </Link>
+            <div className="mt-6 flex items-center justify-center">
+              <a
+                href="https://buymeachai.in/himavamsi.kummari"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-2 bg-accent text-void text-sm font-medium px-5 py-2.5 rounded-pills hover:brightness-110 transition-[filter] shadow-[0_0_20px_-4px_var(--accent)]"
+              >
+                <Heart size={15} className="fill-void group-hover:[animation:sponsorHeartbeat_1.1s_ease-in-out_infinite]" />
+                Sponsor
+              </a>
+            </div>
           </div>
         </div>
       </section>
