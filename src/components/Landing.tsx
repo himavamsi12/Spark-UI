@@ -233,7 +233,7 @@ export default function Landing({
                 href="https://buymeachai.in/himavamsi.kummari"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group inline-flex items-center gap-2 bg-accent text-void text-sm font-medium px-5 py-2.5 rounded-pills hover:brightness-110 transition-[filter] shadow-[0_0_20px_-4px_var(--accent)]"
+                className="group inline-flex items-center gap-2 bg-accent text-void text-sm font-medium px-5 py-2.5 rounded-pills hover:brightness-110 transition-[filter]"
               >
                 <Heart size={15} className="fill-void group-hover:[animation:sponsorHeartbeat_1.1s_ease-in-out_infinite]" />
                 Sponsor

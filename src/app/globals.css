@@ -63,8 +63,10 @@
   --color-lavender-beam: var(--color-lavender-beam);
   --color-iris-glow: var(--color-iris-glow);
 
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-display);
+  /* Site chrome only - every component's own typeface (barlow-condensed,
+     dm-sans, etc.) is untouched and keeps matching its original reference. */
+  --font-sans: "Satoshi", var(--font-inter), sans-serif;
+  --font-display: "Satoshi", var(--font-display), sans-serif;
   --font-mono: var(--font-commit-mono);
 
   --radius-cards: var(--radius-cards);

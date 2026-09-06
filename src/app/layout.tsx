@@ -122,6 +122,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${fontVars} h-full antialiased`}>
+      <head>
+        {/* Site chrome typeface. Not on next/font/google, so loaded the same
+            way individual components already pull in their own reference
+            fonts elsewhere - a direct stylesheet link. */}
+        <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap" />
+      </head>
       <body className="min-h-full flex flex-col bg-bg text-text font-sans">{children}</body>
     </html>
   );
