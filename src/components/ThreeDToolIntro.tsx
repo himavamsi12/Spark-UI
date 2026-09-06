@@ -57,7 +57,7 @@ export default function ThreeDToolIntro() {
           </p>
           <div className="flex flex-wrap items-center justify-center gap-2">
             <a
-              href="#"
+              href="https://github.com/himavamsi12/Spark-UI"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 border border-border text-pearl text-sm font-medium px-3.5 py-2 rounded-pills hover:border-pearl/40 hover:text-chalk transition-colors"
@@ -66,10 +66,10 @@ export default function ThreeDToolIntro() {
               Follow the repo
             </a>
             <a
-              href="#"
+              href="https://buymeachai.in/himavamsi.kummari"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 bg-accent text-void text-sm font-medium px-3.5 py-2 rounded-pills hover:brightness-110 transition-[filter] shadow-[0_0_20px_-4px_var(--accent)]"
+              className="flex items-center gap-1.5 bg-accent text-void text-sm font-medium px-3.5 py-2 rounded-pills hover:brightness-110 transition-[filter]"
             >
               <Heart size={15} className="fill-void" />
               Sponsor this build

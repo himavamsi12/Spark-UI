@@ -10,6 +10,7 @@ import {
   RotateCcw,
   Code2,
   EyeIcon,
+  SlidersHorizontal,
 } from "lucide-react";
 import MediaPreview from "./MediaPreview";
 import OriginalControlPanel from "./OriginalControlPanel";
@@ -75,6 +76,7 @@ export default function OriginalDetailView({
   const [navSearch, setNavSearch] = useState("");
   const [navSort, setNavSort] = useState<SortKey>("trending");
   const [navCategory, setNavCategory] = useState<string | null>(null);
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const navCounts = useMemo(() => {
     const c: Record<string, number> = {};
     for (const d of allComponents) c[d.category] = (c[d.category] || 0) + 1;
@@ -113,9 +115,18 @@ export default function OriginalDetailView({
         onCategory={setNavCategory}
         counts={navCounts}
         total={allComponents.length}
+        mobileOpen={mobileFiltersOpen}
+        onMobileClose={() => setMobileFiltersOpen(false)}
       />
 
       <main className="flex-1 min-w-0 min-h-0 overflow-y-auto no-scrollbar px-8 py-6 w-full">
+        <button
+          onClick={() => setMobileFiltersOpen(true)}
+          className="flex items-center gap-1.5 mb-3 border border-border text-pearl text-xs font-medium px-2.5 py-1.5 rounded-pills hover:border-pearl/40 hover:text-chalk transition-colors lg:hidden"
+        >
+          <SlidersHorizontal size={13} />
+          Browse components
+        </button>
         <div className="flex items-center gap-2 mb-1">
           <h1 className="text-3xl font-display font-medium tracking-tight text-chalk">{entry.name}</h1>
           <span className="ml-auto border border-border text-pearl rounded-pills px-2 py-0.5 text-xs">

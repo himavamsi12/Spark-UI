@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Check, Terminal } from "lucide-react";
+import { ArrowRight, Check, SlidersHorizontal, Terminal } from "lucide-react";
 import Sidebar from "./Sidebar";
 import type { ComponentEntry, SortKey } from "@/lib/types";
 
@@ -46,6 +46,7 @@ export default function DocsIntro({ allComponents }: { allComponents: ComponentE
   const [navSearch, setNavSearch] = useState("");
   const [navSort, setNavSort] = useState<SortKey>("trending");
   const [navCategory, setNavCategory] = useState<string | null>(null);
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const navCounts = useMemo(() => {
     const c: Record<string, number> = {};
     for (const d of allComponents) c[d.category] = (c[d.category] || 0) + 1;
@@ -64,11 +65,20 @@ export default function DocsIntro({ allComponents }: { allComponents: ComponentE
         onCategory={setNavCategory}
         counts={navCounts}
         total={allComponents.length}
+        mobileOpen={mobileFiltersOpen}
+        onMobileClose={() => setMobileFiltersOpen(false)}
       />
 
       <main className="flex-1 min-w-0 min-h-0 overflow-y-auto no-scrollbar">
         <div className="flex gap-16 px-10 md:px-16 py-12 max-w-6xl">
           <div className="flex-1 min-w-0 max-w-3xl">
+            <button
+              onClick={() => setMobileFiltersOpen(true)}
+              className="flex items-center gap-1.5 mb-4 border border-border text-pearl text-xs font-medium px-2.5 py-1.5 rounded-pills hover:border-pearl/40 hover:text-chalk transition-colors lg:hidden"
+            >
+              <SlidersHorizontal size={13} />
+              Browse components
+            </button>
             <span className="text-xs font-medium text-accent uppercase tracking-wide">Getting started</span>
             <h1 className="font-display text-3xl sm:text-4xl font-semibold tracking-tight text-chalk mt-2 mb-4">
               Introduction

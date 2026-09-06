@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, Heart, Search, TrendingUp, Sparkles, Flame, Sparkle } from "lucide-react";
+import { BookOpen, Heart, Search, TrendingUp, Sparkles, Flame, Sparkle, X } from "lucide-react";
 import MediaPreview from "./MediaPreview";
 import { useFavorites } from "@/lib/favorites";
 import { CATEGORY_ORDER, type ComponentEntry, type SortKey } from "@/lib/types";
@@ -33,6 +33,8 @@ export default function Sidebar({
   onCategory,
   counts,
   total,
+  mobileOpen = false,
+  onMobileClose,
 }: {
   data: ComponentEntry[];
   search: string;
@@ -43,6 +45,9 @@ export default function Sidebar({
   onCategory: (v: string | null) => void;
   counts: Record<string, number>;
   total: number;
+  /** Below `lg` the sidebar is an off-canvas drawer instead of a static column. */
+  mobileOpen?: boolean;
+  onMobileClose?: () => void;
 }) {
   const pathname = usePathname();
   const activeSlug = pathname?.startsWith("/components/") ? pathname.split("/")[2] : null;
@@ -102,6 +107,13 @@ export default function Sidebar({
     setPreview(null);
   }
 
+  // A component link navigating away should close the mobile drawer instead
+  // of leaving it open behind the new page.
+  useEffect(() => {
+    onMobileClose?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
+
   // Every component, grouped by category and alphabetised. This list is the
   // full site index, independent of the category/sort filters applied to the
   // grid, so you can always jump straight to a component by name.
@@ -125,7 +137,31 @@ export default function Sidebar({
   }, [data, search]);
 
   return (
-    <aside className="w-[280px] shrink-0 border-r border-border h-full overflow-y-auto no-scrollbar px-4 py-5 hidden lg:block">
+    <>
+      {/* Backdrop: mobile/tablet only, and only while the drawer is open. */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-void/70 lg:hidden"
+          onClick={onMobileClose}
+          aria-hidden="true"
+        />
+      )}
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 w-[280px] max-w-[82vw] bg-bg border-r border-border overflow-y-auto no-scrollbar px-4 py-5 transition-transform duration-300 ease-out ${
+          mobileOpen ? "translate-x-0" : "-translate-x-full"
+        } lg:static lg:z-auto lg:w-[280px] lg:max-w-none lg:shrink-0 lg:h-full lg:translate-x-0`}
+      >
+        <div className="flex items-center justify-between mb-4 lg:hidden">
+          <span className="text-sm font-medium text-chalk">Filters</span>
+          <button
+            onClick={onMobileClose}
+            aria-label="Close filters"
+            className="p-1.5 rounded-medium text-muted hover:text-chalk hover:bg-panel transition-colors"
+          >
+            <X size={16} />
+          </button>
+        </div>
+
       <div className="relative mb-5">
         <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
         <input
@@ -275,6 +311,7 @@ export default function Sidebar({
           </div>
         </div>
       )}
-    </aside>
+      </aside>
+    </>
   );
 }

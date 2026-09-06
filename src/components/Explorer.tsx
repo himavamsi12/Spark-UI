@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Camera, Clapperboard } from "lucide-react";
+import { Camera, Clapperboard, SlidersHorizontal } from "lucide-react";
 import Sidebar from "./Sidebar";
 import ComponentCard from "./ComponentCard";
 import Footer from "./Footer";
@@ -28,6 +28,7 @@ export default function Explorer({ data }: { data: ComponentEntry[] }) {
     initialSort && SORT_KEYS.includes(initialSort) ? initialSort : "trending",
   );
   const [previewType, setPreviewType] = useState<"live" | "still">("live");
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   const counts = useMemo(() => {
     const c: Record<string, number> = {};
@@ -61,19 +62,30 @@ export default function Explorer({ data }: { data: ComponentEntry[] }) {
         onCategory={setCategory}
         counts={counts}
         total={scoped.length}
+        mobileOpen={mobileFiltersOpen}
+        onMobileClose={() => setMobileFiltersOpen(false)}
       />
       <main className="flex-1 min-w-0 min-h-0 overflow-y-auto no-scrollbar px-6 py-5" data-shell-scroll>
-        <div className="flex items-center justify-between mb-4">
-          <p className="text-sm text-muted">
-            {category ? (
-              <>
-                {category} • {filtered.length}
-              </>
-            ) : (
-              <>Discover {filtered.length} Components</>
-            )}
-          </p>
-          <div className="flex items-center gap-1 bg-panel border border-border rounded-pills p-1">
+        <div className="flex items-center justify-between gap-2 mb-4">
+          <div className="flex items-center gap-2 min-w-0">
+            <button
+              onClick={() => setMobileFiltersOpen(true)}
+              className="flex items-center gap-1.5 shrink-0 border border-border text-pearl text-xs font-medium px-2.5 py-1.5 rounded-pills hover:border-pearl/40 hover:text-chalk transition-colors lg:hidden"
+            >
+              <SlidersHorizontal size={13} />
+              Filters
+            </button>
+            <p className="text-sm text-muted truncate">
+              {category ? (
+                <>
+                  {category} • {filtered.length}
+                </>
+              ) : (
+                <>Discover {filtered.length} Components</>
+              )}
+            </p>
+          </div>
+          <div className="flex items-center gap-1 bg-panel border border-border rounded-pills p-1 shrink-0">
             <span className="text-xs text-muted pl-1.5 pr-1 hidden sm:inline">Preview Type:</span>
             <button
               onClick={() => setPreviewType("live")}

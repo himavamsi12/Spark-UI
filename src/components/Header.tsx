@@ -1,6 +1,6 @@
 "use client";
 
-import { Heart, Plug } from "lucide-react";
+import { Heart, Menu, Plug, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -19,6 +19,13 @@ const NAV = [
   { label: "Docs", href: "/docs" },
 ];
 
+const MOBILE_NAV = [
+  { label: "Components", href: "/components" },
+  { label: "Docs", href: "/docs" },
+  { label: "MCP", href: "/mcp" },
+  { label: "3D Tool", href: "/3d-tool" },
+];
+
 export default function Header() {
   const pathname = usePathname();
   const isComponents = pathname.startsWith("/components");
@@ -29,6 +36,10 @@ export default function Header() {
   // Bumped on hover of the whole wordmark (icon + text), so the strike
   // replays every time. See Logo.tsx for how strikeId drives the remount.
   const [strikeId, setStrikeId] = useState(0);
+
+  // The full nav (Components/Docs/MCP/3D Tool) collapses into this dropdown
+  // below `md`, since that's the only way to reach MCP or 3D Tool on mobile.
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   return (
     <header className="relative h-20 shrink-0 border-b border-border flex items-center justify-between px-6 bg-bg z-20">
@@ -77,11 +88,18 @@ export default function Header() {
       </nav>
 
       <div className="flex items-center gap-2">
+        <button
+          onClick={() => setMobileNavOpen((v) => !v)}
+          aria-label={mobileNavOpen ? "Close menu" : "Open menu"}
+          className="flex items-center justify-center p-2 rounded-pills border border-border text-pearl hover:border-pearl/40 hover:text-chalk transition-colors md:hidden"
+        >
+          {mobileNavOpen ? <X size={16} /> : <Menu size={16} />}
+        </button>
         <a
           href="https://github.com/himavamsi12/Spark-UI"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1.5 border border-border text-pearl text-sm font-medium px-3.5 py-2 rounded-pills hover:border-pearl/40 hover:text-chalk transition-colors"
+          className="hidden md:flex items-center gap-1.5 border border-border text-pearl text-sm font-medium px-3.5 py-2 rounded-pills hover:border-pearl/40 hover:text-chalk transition-colors"
         >
           <GithubMark size={15} />
           <span className="hidden sm:inline">Star on GitHub</span>
@@ -93,9 +111,49 @@ export default function Header() {
           className="group flex items-center gap-1.5 bg-accent text-void text-sm font-medium px-3.5 py-2 rounded-pills hover:brightness-110 transition-[filter] shadow-[0_0_20px_-4px_var(--accent)]"
         >
           <Heart size={15} className="fill-void group-hover:[animation:sponsorHeartbeat_1.1s_ease-in-out_infinite]" />
-          Sponsor
+          <span className="hidden md:inline">Sponsor</span>
         </a>
       </div>
+
+      {mobileNavOpen && (
+        <>
+          <div
+            className="fixed inset-0 top-20 z-20 bg-void/70 md:hidden"
+            onClick={() => setMobileNavOpen(false)}
+            aria-hidden="true"
+          />
+          <nav className="absolute left-0 right-0 top-full z-30 border-b border-border bg-charcoal px-4 py-3 flex flex-col gap-1 md:hidden">
+            {MOBILE_NAV.map((item) => {
+              const active =
+                (item.label === "Components" && isComponents) ||
+                (item.label === "Docs" && isDocs) ||
+                (item.label === "MCP" && isMcp) ||
+                (item.label === "3D Tool" && is3dTool);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`px-3.5 py-2.5 rounded-pills text-sm font-medium transition-colors ${
+                    active ? "bg-slate text-chalk" : "text-pearl hover:bg-panel"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+            <span className="my-1 h-px bg-border" />
+            <a
+              href="https://github.com/himavamsi12/Spark-UI"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-pills text-sm font-medium text-pearl hover:bg-panel transition-colors"
+            >
+              <GithubMark size={15} />
+              Star on GitHub
+            </a>
+          </nav>
+        </>
+      )}
     </header>
   );
 }

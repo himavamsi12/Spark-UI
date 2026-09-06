@@ -229,8 +229,8 @@ export default function AccessGateReveal({
         <div className="w-full p-6 flex justify-between items-start" style={readout}>
           {DEFAULT_BACKDROP_TOP.map((col, i) => (
             <div key={i} className="flex flex-col">
-              {col.map((line) => (
-                <p key={line}>{line}</p>
+              {col.map((line, li) => (
+                <p key={li}>{line}</p>
               ))}
               {i === 3 && (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -248,8 +248,8 @@ export default function AccessGateReveal({
         <div className="w-full p-6 flex justify-between items-end" style={readout}>
           {DEFAULT_BACKDROP_BOTTOM.map((col, i) => (
             <div key={i} className="flex flex-col">
-              {col.map((line) => (
-                <p key={line}>{line}</p>
+              {col.map((line, li) => (
+                <p key={li}>{line}</p>
               ))}
             </div>
           ))}

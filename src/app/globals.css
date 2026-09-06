@@ -64,9 +64,11 @@
   --color-iris-glow: var(--color-iris-glow);
 
   /* Site chrome only - every component's own typeface (barlow-condensed,
-     dm-sans, etc.) is untouched and keeps matching its original reference. */
-  --font-sans: "Satoshi", var(--font-inter), sans-serif;
-  --font-display: "Satoshi", var(--font-display), sans-serif;
+     dm-sans, etc.) is untouched and keeps matching its original reference.
+     No Inter/Inter Tight fallback here on purpose - a generic system stack
+     instead, so nothing ever visibly reverts to Inter. */
+  --font-sans: "Satoshi", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Satoshi", ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-commit-mono);
 
   --radius-cards: var(--radius-cards);
